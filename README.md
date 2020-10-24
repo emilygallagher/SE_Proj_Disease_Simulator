@@ -1,1 +1,0 @@
-# SE_Proj_Disease_Simulator
