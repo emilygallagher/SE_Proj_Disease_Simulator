@@ -12,7 +12,7 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.beans.value.*;
-import javafx.event.*; 
+import javafx.event.*;
 import javafx.animation.*;
 import javafx.geometry.*;
 import java.io.*;
@@ -35,9 +35,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class TheUi extends Application 
+public class TheUi extends Application
 {
-    public static void main(String[] args) 
+    public static void main(String[] args)
     {
         try
         {
@@ -53,7 +53,7 @@ public class TheUi extends Application
         }
     }
 
-    public void start(Stage mainStage) 
+    public void start(Stage mainStage)
     {
         mainStage.setTitle("Insert Title HERE");
 
@@ -67,6 +67,7 @@ public class TheUi extends Application
         MenuBar bar = new MenuBar();
         root.setTop(bar);
         root.setCenter(root2);
+        
         // custom code below --------------------------------------------
 
         GridPane designArea = new GridPane();
@@ -89,7 +90,7 @@ public class TheUi extends Application
         // ------------------Population Information-----------------------------
         Label TotPop = new Label     ("Total Population");
         Label InfPop = new Label     ("Infected Population");
-        HBox row1 = new HBox();        
+        HBox row1 = new HBox();
         HBox row2 = new HBox();// adds in the names for HBoxes
         TextField TPint  = new TextField();TPint.setMaxWidth(80);
         TextField IPint  = new TextField();IPint.setMaxWidth(80);
@@ -97,7 +98,7 @@ public class TheUi extends Application
         // force the field to be numeric only
         TPint.textProperty().addListener(new ChangeListener<String>() {
                 @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, 
+                public void changed(ObservableValue<? extends String> observable, String oldValue,
                 String newValue) {
                     if (!newValue.matches("\\d*")) {
                         TPint.setText(newValue.replaceAll("[^\\d]", ""));
@@ -107,7 +108,7 @@ public class TheUi extends Application
         // force the field to be numeric only
         IPint.textProperty().addListener(new ChangeListener<String>() {
                 @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, 
+                public void changed(ObservableValue<? extends String> observable, String oldValue,
                 String newValue) {
                     if (!newValue.matches("\\d*")) {
                         IPint.setText(newValue.replaceAll("[^\\d]", ""));
@@ -122,7 +123,7 @@ public class TheUi extends Application
         // force the field to be numeric only
         DayInt.textProperty().addListener(new ChangeListener<String>() {
                 @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, 
+                public void changed(ObservableValue<? extends String> observable, String oldValue,
                 String newValue) {
                     if (!newValue.matches("\\d*")) {
                         DayInt.setText(newValue.replaceAll("[^\\d]", ""));
@@ -130,7 +131,7 @@ public class TheUi extends Application
                 }
             });
         // --------------------Preventitive measures-----------------------------------------
-        VBox PreventMeasurechecks= new VBox(); 
+        VBox PreventMeasurechecks= new VBox();
         CheckBox M1 = new CheckBox("Measure one");
         CheckBox M2 = new CheckBox("Measure two ");
         CheckBox M3 = new CheckBox("Measure Three?");
@@ -140,10 +141,10 @@ public class TheUi extends Application
         Button startButton = new Button("Start");
         // --------------------------------------------------------------
         designArea.addRow( 0,DesText,DesSelect  );
-        designArea.addRow( 1,TotPop,TPint, InfPop,IPint  ); 
-        designArea.addRow( 2, DayTxt,DayInt, CheckDay); 
-        designArea.addRow( 3, PreventMeasurechecks ); 
-        designArea.addRow( 4,startButton ); 
+        designArea.addRow( 1,TotPop,TPint, InfPop,IPint  );
+        designArea.addRow( 2, DayTxt,DayInt, CheckDay);
+        designArea.addRow( 3, PreventMeasurechecks );
+        designArea.addRow( 4,startButton );
 
         // region where text is drawn
         int canvasWidth = 800;
@@ -156,28 +157,28 @@ public class TheUi extends Application
         // event and listener to activate on changes.
 
         // most generic functional interface: no inputs, no output, contains method run()
-        Runnable updateFunction = 
-            () -> 
+        Runnable updateFunction =
+            () ->
             {
 
             };
 
         EventHandler<ActionEvent> renderHandler = (ActionEvent event) ->{
-                updateFunction.run();      
+                updateFunction.run();
 
             };
 
-        ChangeListener<Object> renderListener = 
+        ChangeListener<Object> renderListener =
             (ObservableValue<? extends Object> ov, Object oldValue, Object newValue) ->
             {
-                updateFunction.run();           
+                updateFunction.run();
 
             };
 
         /////////////////////////////////
         // This is the menu bar section that is at the top
         Menu fileMenu = new Menu("File");
-        Menu aboutMenu = new Menu("About");  
+        Menu aboutMenu = new Menu("About");
         MenuItem quitItem = new MenuItem("Quit");
         quitItem.setGraphic(new ImageView( new Image("icons/cross.png") ) );
 
@@ -211,6 +212,10 @@ public class TheUi extends Application
                 infoAlert.showAndWait();
             }
         );
+        
+        
+        
+        
         ////////////////////////////////////////////////////////////////
         // custom code above --------------------------------------------
 
