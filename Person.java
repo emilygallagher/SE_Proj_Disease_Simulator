@@ -1,4 +1,3 @@
-import java.awt.Point;
 import java.util.Random;
 import javafx.geometry.Point2D;
 
