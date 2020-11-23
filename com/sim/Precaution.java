@@ -1,11 +1,11 @@
 package com.sim;
 
 /**
- *
+ * A precautionary measure that can reduce the chances of a disease in a simulation from spreading.
  *
  * @author Emily Gallagher
- * @version %I%
- * @since 1.0
+ * @version 1.0
+ * @since 0.2
  */
 public class Precaution
 {

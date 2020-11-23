@@ -1,11 +1,11 @@
 package com.sim;
 
 /**
- *
+ * Static class that contains all {@code Disease} and {@code Precaution} object presets.
  *
  * @author Emily Gallagher
- * @version %I%
- * @since 1.0
+ * @version 1.1
+ * @since 0.2
  */
 public final class Databases
 {
@@ -17,15 +17,17 @@ public final class Databases
     private static final Precaution[] PRECAUTIONS_;
     
     //----- CONSTRUCTORS -----
-    
-    /* Initializes static fields. */
+    // Initializes static fields.
     static
     {
-        DISEASES_ = new Disease[] {
+        DISEASES_ = new Disease[]
+        {
             // Initialize all Disease presets here.
             
         };
-        PRECAUTIONS_ = new Precaution[] {
+        
+        PRECAUTIONS_ = new Precaution[]
+        {
             // Initialize all precautionary measure presets here.
             
         };

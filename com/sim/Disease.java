@@ -1,11 +1,12 @@
 package com.sim;
 
 /**
- *
+ * Class that contains the attributes of a real-life or custom disease to be used when infecting
+ * people in the simulation.
  *
  * @author Emily Gallagher
- * @version %I%
- * @since 1.0
+ * @version 1.0
+ * @since 0.2
  */
 public class Disease
 {

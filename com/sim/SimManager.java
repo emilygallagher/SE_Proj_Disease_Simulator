@@ -1,120 +1,75 @@
 package com.sim;
 
+import java.util.List;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
- *
+ * A manager object that controls the logic of the simulation.
  *
  * @author Emily Gallagher
- * @version %I%
- * @since 1.0
+ * @version 1.0
+ * @since 0.03
  */
 public class SimManager
 {
     //----- FIELDS -----
-    // CONSTANTS
-    /** The length of a single simulation day in terms of frames. */
-    public static final int DAY_LENGTH = 90;
-    
     // INSTANCE
-    /**
-     * Is the simulation running in debug mode? Should be permanently set to false for public
-     * release.
-     */
-    private boolean isDebugActive_;
+    /** Object containing settings on how to set up and operate the simulation. */
+    private SimSettings simSettings_;
     
-    /**
-     * The maximum number of days to simulate. The simulation should automatically stop after the
-     * day count surpasses this number.
-     */
-    private int maxDays_;
+    /** Manager object for the entire simulation population. */
+    private PopulationManager populationManager_;
+    
+    /** The JavaFX {@code Canvas} to render to. */
+    private Canvas canvas_;
+    
+    /** The JavaFX {@code GraphicsContext} associated with the referenced {@code Canvas}. */
+    private GraphicsContext gc_;
     
     /** Whether or not the simulation is currently running. */
     private boolean isRunning_;
     
     /** The number of frames that have passed since the simulation started. */
-    private int frameCount_;
-    
-    /** The disease currently being simulated. */
-    private Disease disease_;
-    
-    /** The cumulative modifier of all activated precautionary measures. */
-    private double precautionsModifier_;
-    
-    /** The JavaFX {@code Canvas} to render to. */
-    private Canvas canvas_;
-    
-    /** Manager object for the entire simulation population. */
-    private PopulationManager populationManager_;
+    private long frameCount_;
     
     //----- CONSTRUCTORS -----
-    
     public SimManager()
     {
-        this(null);
+        this(new SimSettings(), null);
     }
     
-    public SimManager(Disease disease)
+    public SimManager(SimSettings simSettings)
     {
-        disease_ = disease;
+        this(simSettings, null);
+    }
+    
+    public SimManager(SimSettings simSettings, Canvas canvas)
+    {
+        simSettings_ = simSettings;
+        setCanvas(canvas);
+        
+        populationManager_ = new PopulationManager(this);
+        isRunning_ = false;
+        frameCount_ = 0;
     }
     
     //----- METHODS -----
     // Get & Set
-    public boolean isDebugActive()
+    public SimSettings getSimSettings()
     {
-        return isDebugActive_;
+        return simSettings_;
     }
     
-    public void setDebugMode(boolean isDebugActive)
+    public void setSimSettings(SimSettings simSettings)
     {
-        isDebugActive_ = isDebugActive;
+        simSettings_ = simSettings;
     }
     
-    public int getMaxDays()
+    public PopulationManager getPopulationManager()
     {
-        return maxDays_;
-    }
-    
-    public void setMaxDays(int days)
-    {
-        maxDays_ = days;
-    }
-    
-    public boolean isRunning()
-    {
-        return isRunning_;
-    }
-    
-    public int getFrameCount()
-    {
-        return frameCount_;
-    }
-    
-    public int getCurrentDay()
-    {
-        return frameCount_ / DAY_LENGTH;
-    }
-    
-    public Disease getDisease()
-    {
-        return disease_;
-    }
-    
-    public void setDisease(Disease disease)
-    {
-        disease_ = disease;
-    }
-    
-    public double getPrecautionsModifier()
-    {
-        return precautionsModifier_;
-    }
-    
-    public void setPrecautionsModifier(double modifier)
-    {
-        precautionsModifier_ = modifier;
+        return populationManager_;
     }
     
     public Canvas getCanvas()
@@ -125,73 +80,97 @@ public class SimManager
     public void setCanvas(Canvas canvas)
     {
         canvas_ = canvas;
+        gc_ = canvas_ != null ? canvas_.getGraphicsContext2D() : null;
     }
     
     public GraphicsContext getGC()
     {
-        return canvas_.getGraphicsContext2D();
+        return gc_;
     }
     
-    public double getMaxX()
+    public boolean isRunning()
     {
-        return canvas_.getWidth();
+        return isRunning_;
     }
     
-    public double getMaxY()
+    public long getFrameCount()
     {
-        return canvas_.getHeight();
+        return frameCount_;
     }
     
-    public PopulationManager getPopulationManager()
+    public long getDay()
     {
-        return populationManager_;
+        return frameCount_ / simSettings_.getDayLength();
     }
     
     // Playback Control
     public void startSimulation()
     {
-        // check if all required settings are filled.
-        if (!isRunning_ )
-        {
-            // generate population
-        }
-        
+        // TODO
     }
     
     public void pauseSimulation()
     {
-        if (isRunning())
-        {
-        
-        }
+        // TODO
     }
     
     public void resetSimulation()
     {
-    
+        // TODO
     }
     
-    public void update(double dt)
+    public void update()
     {
-        if (getCurrentDay() < maxDays_ || maxDays_ < 0)
-        {
-        
-        }
+        // TODO
+        frameCount_++;
+        populationManager_.updateAll();
+        draw();
     }
     
     // Draw
     private void draw()
     {
-        if (isDebugActive_)
+        if (canvas_ != null)
         {
-            debugDraw();
+            var people = populationManager_.getPeopleUnmodifiable();
+            var radius = simSettings_.getPersonRadius();
+            var diameter = radius * 2;
+            
+            gc_.setFill(Color.WHITE);
+            gc_.fillRect(0.0, 0.0, canvas_.getWidth(), canvas_.getHeight());
+            
+            if (simSettings_.isDebugActive())
+            {
+                debugDraw(people);
+            }
+    
+            for (var person : people)
+            {
+                var x = person.getCurrentPosition().getX() - radius;
+                var y = person.getCurrentPosition().getY() - radius;
+                var state = person.getState();
+                
+                gc_.setFill(state.getFillColor());
+                gc_.setStroke(state.getStrokeColor());
+                gc_.setLineWidth(1.0);
+                gc_.fillOval(x, y, diameter, diameter);
+                gc_.strokeOval(x, y, diameter, diameter);
+                
+                // Additional debug draw that marks the real position of the person.
+                if (simSettings_.isDebugActive())
+                {
+                    gc_.setFill(Color.BLACK);
+                    gc_.fillOval(person.getCurrentPosition().getX(),
+                        person.getCurrentPosition().getY(), 2.0, 2.0);
+                }
+            }
+    
+            // TODO
         }
-        
-        
     }
     
-    private void debugDraw()
+    private void debugDraw(List<Person> people)
     {
-    
+        // TODO
     }
 }
