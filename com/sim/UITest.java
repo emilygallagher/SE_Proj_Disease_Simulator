@@ -34,7 +34,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  *
- *
  * @author John Kulins
  * @version 1.0
  * @since 0.1
