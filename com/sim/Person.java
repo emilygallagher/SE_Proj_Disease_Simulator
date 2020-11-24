@@ -1,6 +1,7 @@
 package com.sim;
 
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
 
 /**
  * A representation of a person used in the simulation.
@@ -55,7 +56,7 @@ public class Person
     
     public SimSettings getSimSettings()
     {
-        var simManager = getSimManager();
+        SimManager simManager = getSimManager();
         return simManager != null ? simManager.getSimSettings() : null;
     }
     
@@ -107,7 +108,7 @@ public class Person
     public void recalculateVelocity(double speed)
     {
         // Get the non-normalized directional vector,
-        var velocity = targetPosition_.subtract(currentPosition_);
+        Point2D velocity = targetPosition_.subtract(currentPosition_);
         
         // normalize (remove speed from) the direction vector,
         velocity = velocity.normalize();
@@ -166,23 +167,23 @@ public class Person
     // Move
     public void move()
     {
-        var distance = getCurrentPosition().distance(getTargetPosition());
+        double distance = getCurrentPosition().distance(getTargetPosition());
         
         // If the person would reach or move past the target position this frame...
         if (distance <= getSpeed())
         {
-            var canvas = getSimManager().getCanvas();
-            var settings = getSimSettings();
+            Canvas canvas = getSimManager().getCanvas();
+            SimSettings settings = getSimSettings();
             
             // Get the bounds in which the person can travel between.
-            var offset = settings.getPersonRadius();
-            var minXY = new Point2D(offset, offset);
-            var maxXY = new Point2D(canvas.getWidth() - offset, canvas.getHeight() - offset);
+            double offset = settings.getPersonRadius();
+            Point2D minXY = new Point2D(offset, offset);
+            Point2D maxXY = new Point2D(canvas.getWidth() - offset, canvas.getHeight() - offset);
             
             // Generate new speed.
-            var minSpeed = settings.getMinMoveSpeed();
-            var maxSpeed = settings.getMaxMoveSpeed();
-            var speed = Utils.getRandomRange(minSpeed, maxSpeed);
+            double minSpeed = settings.getMinMoveSpeed();
+            double maxSpeed = settings.getMaxMoveSpeed();
+            double speed = Utils.getRandomRange(minSpeed, maxSpeed);
             
             setCurrentPosition(getTargetPosition());
             

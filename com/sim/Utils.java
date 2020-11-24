@@ -144,8 +144,8 @@ public final class Utils
         }
         else
         {
-            var x = getRandomRange(minXY.getX(), maxXY.getX());
-            var y = getRandomRange(minXY.getY(), maxXY.getY());
+            double x = getRandomRange(minXY.getX(), maxXY.getX());
+            double y = getRandomRange(minXY.getY(), maxXY.getY());
             return new Point2D(x, y);
         }
     }

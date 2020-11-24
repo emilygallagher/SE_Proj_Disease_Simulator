@@ -1,3 +1,5 @@
+package com.sim;
+
 import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -29,13 +31,15 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser.ExtensionFilter;
+
 /**
- * Write a description of class TheUi here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ *
+ * @author John Kulins
+ * @version 1.0
+ * @since 0.1
  */
-public class TheUi extends Application
+public class UITest extends Application
 {
     public static void main(String[] args)
     {

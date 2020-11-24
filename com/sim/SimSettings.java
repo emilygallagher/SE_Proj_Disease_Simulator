@@ -17,6 +17,12 @@ public class SimSettings
     /** The cumulative modifier of all activated precautionary measures. */
     private double totalModifier_;
     
+    /**
+     * When active, people will self-isolate when they show symptoms to prevent the potential
+     * spread of the disease they are infected with.
+     */
+    private boolean isSelfIsolationActive_;
+    
     /** The total number of people to test in the simulation. */
     private int totalPopulation_;
     
@@ -58,7 +64,7 @@ public class SimSettings
      */
     public SimSettings()
     {
-        this(null, 0.0, 0, 0, -1, 90, 1.0, 2.0, 7.5, false);
+        this(null, 0.0, false, 0, 0, -1, 90, 1.0, 2.0, 7.5, false);
     }
     
     /**
@@ -69,10 +75,10 @@ public class SimSettings
      */
     public SimSettings(SimSettings simSettings)
     {
-        this(simSettings.disease_, simSettings.totalModifier_, simSettings.totalPopulation_,
-            simSettings.startingInfected_, simSettings.maxDays_, simSettings.dayLength_,
-            simSettings.personRadius_, simSettings.minMoveSpeed_, simSettings.maxMoveSpeed_,
-            simSettings.isDebugActive_);
+        this(simSettings.disease_, simSettings.totalModifier_, simSettings.isSelfIsolationActive_,
+            simSettings.totalPopulation_, simSettings.startingInfected_, simSettings.maxDays_,
+            simSettings.dayLength_, simSettings.personRadius_, simSettings.minMoveSpeed_,
+            simSettings.maxMoveSpeed_, simSettings.isDebugActive_);
     }
     
     /**
@@ -81,6 +87,9 @@ public class SimSettings
      *
      * @param disease The {@code Disease} to be used during the simulation.
      * @param totalModifier The cumulative modifier of all activated precautionary measures.
+     * @param isSelfIsolationActive Whether or not a {@code Person} should isolate themselves
+     *                              when they begin to show symptoms in order to prevent the
+     *                              potential spread of the disease.
      * @param totalPopulation The total number of people in this simulation.
      * @param startingInfected The number of people that start the simulation already infected.
      * @param maxDays The maximum number of days to simulate. A negative number means infinite.
@@ -90,12 +99,12 @@ public class SimSettings
      * @param minMoveSpeed The minimum speed at which a {@code Person} in the simulation can move.
      * @param maxMoveSpeed The maximum speed at which a {@code Person} in the simulation can move.
      */
-    public SimSettings(Disease disease, double totalModifier, int totalPopulation,
-        int startingInfected, int maxDays, int dayLength, double personRadius,
+    public SimSettings(Disease disease, double totalModifier, boolean isSelfIsolationActive,
+        int totalPopulation, int startingInfected, int maxDays, int dayLength, double personRadius,
         double minMoveSpeed, double maxMoveSpeed)
     {
-        this(disease, totalModifier, totalPopulation, startingInfected, maxDays, dayLength,
-            personRadius, minMoveSpeed, maxMoveSpeed, false);
+        this(disease, totalModifier, isSelfIsolationActive, totalPopulation, startingInfected,
+            maxDays, dayLength, personRadius, minMoveSpeed, maxMoveSpeed, false);
     }
     
     /**
@@ -104,6 +113,9 @@ public class SimSettings
      *
      * @param disease The {@code Disease} to be used during the simulation.
      * @param totalModifier The cumulative modifier of all activated precautionary measures.
+     * @param isSelfIsolationActive Whether or not a {@code Person} should isolate themselves
+     *                              when they begin to show symptoms in order to prevent the
+     *                              potential spread of the disease.
      * @param totalPopulation The total number of people in this simulation.
      * @param startingInfected The number of people that start the simulation already infected.
      * @param maxDays The maximum number of days to simulate. A negative number means infinite.
@@ -114,19 +126,20 @@ public class SimSettings
      * @param maxMoveSpeed The maximum speed at which a {@code Person} in the simulation can move.
      * @param isDebugActive Whether or not the simulation should run in debug mode.
      */
-    public SimSettings(Disease disease, double totalModifier, int totalPopulation,
-        int startingInfected, int maxDays, int dayLength, double personRadius,
+    public SimSettings(Disease disease, double totalModifier, boolean isSelfIsolationActive,
+        int totalPopulation, int startingInfected, int maxDays, int dayLength, double personRadius,
         double minMoveSpeed, double maxMoveSpeed, boolean isDebugActive)
     {
         disease_ = disease;
         totalModifier_ = totalModifier;
+        isSelfIsolationActive_ = isSelfIsolationActive;
         totalPopulation_ = totalPopulation;
         startingInfected_ = startingInfected;
         maxDays_ = maxDays;
         dayLength_ = dayLength;
         personRadius_ = personRadius;
         minMoveSpeed_ = minMoveSpeed;
-        maxMoveSpeed_ = minMoveSpeed;
+        maxMoveSpeed_ = maxMoveSpeed;
         isDebugActive_ = isDebugActive;
     }
     
@@ -150,6 +163,16 @@ public class SimSettings
     public void setTotalModifier(double modifier)
     {
         totalModifier_ = modifier;
+    }
+    
+    public boolean isSelfIsolationActive()
+    {
+        return isSelfIsolationActive_;
+    }
+    
+    public void setSelfIsolationActive(boolean active)
+    {
+        isSelfIsolationActive_ = active;
     }
     
     public int getTotalPopulation()

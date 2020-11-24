@@ -132,9 +132,9 @@ public class SimManager
     {
         if (canvas_ != null)
         {
-            var people = populationManager_.getPeopleUnmodifiable();
-            var radius = simSettings_.getPersonRadius();
-            var diameter = radius * 2;
+            List<Person> people = populationManager_.getPeopleUnmodifiable();
+            double radius = simSettings_.getPersonRadius();
+            double diameter = radius * 2;
             
             gc_.setFill(Color.WHITE);
             gc_.fillRect(0.0, 0.0, canvas_.getWidth(), canvas_.getHeight());
@@ -144,11 +144,11 @@ public class SimManager
                 debugDraw(people);
             }
     
-            for (var person : people)
+            for (Person person : people)
             {
-                var x = person.getCurrentPosition().getX() - radius;
-                var y = person.getCurrentPosition().getY() - radius;
-                var state = person.getState();
+                double x = person.getCurrentPosition().getX() - radius;
+                double y = person.getCurrentPosition().getY() - radius;
+                HealthState state = person.getState();
                 
                 gc_.setFill(state.getFillColor());
                 gc_.setStroke(state.getStrokeColor());
