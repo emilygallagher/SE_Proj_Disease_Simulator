@@ -58,10 +58,10 @@ public class UITest extends Application
 
     public void start(Stage mainStage)
     {
-        mainStage.setTitle("Insert Title HERE");
+        mainStage.setTitle("Disease Simulator");
 
         VBox root2 = new VBox();
-        root2.setStyle( "-fx-font-size:20; -fx-background-color: rgb(90%,90%,100%);" );
+        root2.setStyle( "-fx-font-size:20; -fx-background-color: rgb(80%,80%,80%);" );
 
         BorderPane root = new BorderPane();
         Scene mainScene = new Scene(root, 900, 900);
@@ -70,11 +70,11 @@ public class UITest extends Application
         MenuBar bar = new MenuBar();
         root.setTop(bar);
         root.setCenter(root2);
-        
+
         // custom code below --------------------------------------------
 
         GridPane designArea = new GridPane();
-        designArea.setHgap(9);
+        designArea.setHgap(5);
         designArea.setVgap(9);
         designArea.setPadding( new Insets(8) );
 
@@ -83,16 +83,21 @@ public class UITest extends Application
         Label customLabel = new Label("Text:");
 
         TextField customText = new TextField("Sample Text");
-        // combo box (drop down list) effects        --------------------------------------------------
 
-        Label  DesText= new Label("Desieases:");
+        // Disease/Prevention Options (drop down list) --------------------------------------------------
+        Label disOpt = new Label("Diseases:");
+        ComboBox<String> disOpts = new ComboBox<String>();
+        disOpts.getItems().addAll("Choose one", "Covid-19", "Disease 2", "Disease 3");
+        disOpts.setValue("Choose one");
 
-        ComboBox<String> DesSelect = new ComboBox<String>();
-        DesSelect.getItems().addAll("Covid-19", "Insert1", "Insrt2");
-        DesSelect.setValue("Covid-19");
+        Label prevOpt = new Label("Preventative Measure:");
+        ComboBox<String> prevOpts = new ComboBox<String>();
+        prevOpts.getItems().addAll("Choose one", "Masks", "Option 2", "Option 3");
+        prevOpts.setValue("Choose one");
+
         // ------------------Population Information-----------------------------
-        Label TotPop = new Label     ("Total Population");
-        Label InfPop = new Label     ("Infected Population");
+        Label TotPop = new Label("Total Population");
+        Label InfPop = new Label("Infected Population");
         HBox row1 = new HBox();
         HBox row2 = new HBox();// adds in the names for HBoxes
         TextField TPint  = new TextField();TPint.setMaxWidth(80);
@@ -108,6 +113,7 @@ public class UITest extends Application
                     }
                 }
             });
+            
         // force the field to be numeric only
         IPint.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -133,20 +139,14 @@ public class UITest extends Application
                     }
                 }
             });
-        // --------------------Preventitive measures-----------------------------------------
-        VBox PreventMeasurechecks= new VBox();
-        CheckBox M1 = new CheckBox("Measure one");
-        CheckBox M2 = new CheckBox("Measure two ");
-        CheckBox M3 = new CheckBox("Measure Three?");
-        CheckBox M4 = new CheckBox("Measure Four?");
-        PreventMeasurechecks.getChildren().addAll(M1,M2,M3,M4);
+            
         // -------------------Button--------------------------------------
         Button startButton = new Button("Start");
         // --------------------------------------------------------------
-        designArea.addRow( 0,DesText,DesSelect  );
-        designArea.addRow( 1,TotPop,TPint, InfPop,IPint  );
-        designArea.addRow( 2, DayTxt,DayInt, CheckDay);
-        designArea.addRow( 3, PreventMeasurechecks );
+        designArea.addRow( 0,disOpt,disOpts  );
+        designArea.addRow( 1,prevOpt, prevOpts  );
+        designArea.addRow( 2,TotPop,TPint, InfPop,IPint  );
+        designArea.addRow( 3, DayTxt,DayInt, CheckDay);
         designArea.addRow( 4,startButton );
 
         // region where text is drawn
@@ -163,64 +163,73 @@ public class UITest extends Application
         Runnable updateFunction =
             () ->
             {
-
             };
 
         EventHandler<ActionEvent> renderHandler = (ActionEvent event) ->{
                 updateFunction.run();
-
             };
 
         ChangeListener<Object> renderListener =
             (ObservableValue<? extends Object> ov, Object oldValue, Object newValue) ->
             {
                 updateFunction.run();
-
             };
 
-        /////////////////////////////////
         // This is the menu bar section that is at the top
-        Menu fileMenu = new Menu("File");
-        Menu aboutMenu = new Menu("About");
-        MenuItem quitItem = new MenuItem("Quit");
-        quitItem.setGraphic(new ImageView( new Image("icons/cross.png") ) );
+        Menu aboutMenu = new Menu("Options");
 
-        MenuItem aboutItem = new MenuItem("About this program...");
-        aboutItem.setGraphic(new ImageView( new Image("icons/help.png") ) );
+        //Handles Option MenuItems, names, and images
+        MenuItem[] optMenu = new MenuItem[3];
+        Image[] optImg = new Image[3];
+        String[] optName = {"Help","Credits","Quit"};
+        String[] imgName = {"help.png","information.png","cross.png"};
+        for(int x = 0; x < optMenu.length; x++) {
+            optMenu[x] = new MenuItem(optName[x]);
+            optImg[x] = new Image("icons/" + imgName[x]);
 
-        bar.getMenus().addAll(fileMenu, aboutMenu);
+            optMenu[x].setGraphic(new ImageView(optImg[x]));
+            aboutMenu.getItems().addAll(optMenu[x]);
+        }
 
-        aboutMenu.getItems().add( aboutItem );// to add a shortcut key combination to a menu item:
-
-        // to add a shortcut key combination to a menu item:
-        quitItem.setAccelerator(new KeyCodeCombination( KeyCode.Q, KeyCodeCombination.CONTROL_DOWN ));
-
-        quitItem.setOnAction(
-            (ActionEvent event) ->
-            {
-                System.exit(0);// this exits the program
-            }
-        );
-
-        aboutItem.setOnAction(
+        bar.getMenus().addAll(aboutMenu);
+  
+        //Displays Help Section
+        optMenu[0].setOnAction(
             (ActionEvent event) ->
             {
                 // Alert containing information the user must read.
                 Alert infoAlert = new Alert( AlertType.INFORMATION );
-                infoAlert.setTitle("HELP WINDOW");
-                infoAlert.setHeaderText("Welcome to The WINDOW");
-                infoAlert.setContentText("SPEECH");
+                infoAlert.setTitle("Help");
+                infoAlert.setHeaderText("How do I use this program?");
+                infoAlert.setContentText("1. Select a disease and preventative measure from the dropdown list.\n2. Enter the population and total number days you wish to be simulated.\n3. Press the start button to start the simulation.");
 
                 Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
                 infoAlert.showAndWait();
-            }
-        );
-        
-        
-        
-        
-        ////////////////////////////////////////////////////////////////
-        // custom code above --------------------------------------------
+            });      
+
+        //Displays Credit Section
+        optMenu[1].setOnAction(
+            (ActionEvent event) ->
+            {
+                // Alert containing information the user must read.
+                Alert infoAlert = new Alert( AlertType.INFORMATION );
+                infoAlert.setTitle("Credits");
+                infoAlert.setHeaderText("Credits");
+                infoAlert.setContentText("Enter Finalized Credits");
+
+                Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
+                infoAlert.showAndWait();
+            });     
+
+        //Closes Application
+        // to add a shortcut key combination to a menu item:
+        optMenu[2].setAccelerator(new KeyCodeCombination( KeyCode.Q, KeyCodeCombination.CONTROL_DOWN ));
+
+        optMenu[2].setOnAction(
+            (ActionEvent event) ->
+            {
+                System.exit(0);// this exits the program
+            }); 
 
         mainStage.show();
     }
