@@ -93,6 +93,7 @@ public class UITest extends Application
         Label prevOpt = new Label("Preventative Measure:");
         ComboBox<String> prevOpts = new ComboBox<String>();
         prevOpts.getItems().addAll("Choose one", "Masks", "Distance", "Masks and Distace");
+        //masks 70% reduction. distance 30% reduction. masks and distance 90% reduction.
         prevOpts.setValue("Choose one");
 
         // ------------------Population Information-----------------------------
@@ -165,6 +166,11 @@ public class UITest extends Application
         Runnable updateFunction =
             () ->
             {
+                //to obtain text box data it is a simple .getText function.
+                if(disOpts.getValue()=="")//"" is the name in the dropdown box also they will be if statements.
+                {}
+                if ( CheckDay.isSelected() )//checking if a box was checked if it is it will run this code
+                {   }
             };
 
         EventHandler<ActionEvent> renderHandler = (ActionEvent event) ->{
@@ -193,7 +199,7 @@ public class UITest extends Application
             aboutMenu.getItems().addAll(optMenu[x]);
         }
 
-        bar.getMenus().addAll(aboutMenu);
+        bar.getMenus().addAll(aboutMenu); 
 
         //Displays Help Section
         optMenu[0].setOnAction(
@@ -203,7 +209,7 @@ public class UITest extends Application
                 Alert infoAlert = new Alert( AlertType.INFORMATION );
                 infoAlert.setTitle("Help");
                 infoAlert.setHeaderText("How do I use this program?");
-                infoAlert.setContentText("1. Select a disease and preventative measure from the dropdown list.\n2. Enter the population and total number days you wish to be simulated.\n3. Press the start button to start the simulation.");
+                infoAlert.setContentText("1. Select a disease and preventative measure from the dropdown list. \n 2. Enter the population and total number days you wish to be simulated. \n 3. Press the start button to start the simulation.");
 
                 Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
                 infoAlert.showAndWait();
@@ -233,6 +239,12 @@ public class UITest extends Application
                 System.exit(0);// this exits the program
             }); 
 
+        //start button functionality
+        startButton.setOnAction((ActionEvent event) ->
+            {
+
+            
+            });
         mainStage.show();
     }
 }
