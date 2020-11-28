@@ -5,7 +5,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -54,21 +55,40 @@ public class SimTest extends Application
     public void start(Stage stage) throws Exception
     {
         Canvas canvas = new Canvas(900, 900);
-        HBox root = new HBox(canvas);
+        Label dayLabel = new Label("Day: 0");
+        VBox root = new VBox(canvas, dayLabel);
         Scene scene = new Scene(root, 1000, 1000);
+        
+        Disease disease = new Disease();
+        SimSettings simSettings = new SimSettings();
         SimManager simManager = new SimManager();
         
-        SimSettings simSettings = new SimSettings(null, 0.0, false, 30, 0, -1, 90, 10.0, 2.0, 7.5,
-            true);
+        disease.setName("CUSTOM");
+        disease.setSpreadDistance(100.0);
+        disease.setInfectionRate(0.1f);
+        disease.setAsymptomaticRate(0.1f);
+        disease.setDeathRate(0.2f);
+        disease.setIncubationDays(3);
+        disease.setInfectionDays(4);
         
-        root.setStyle("-fx-font-size:20; -fx-background-color: rgb(90%,90%,100%);");
+        simSettings.setDisease(disease);
+        simSettings.setTotalModifier(0.0);
+        simSettings.setSelfIsolationActive(false);
+        simSettings.setTotalPopulation(30);
+        simSettings.setStartingInfected(3);
+        simSettings.setMaxDays(-1);
+        simSettings.setDayLength(90);
+        simSettings.setPersonRadius(10.0);
+        simSettings.setMinMoveSpeed(2.0);
+        simSettings.setMaxMoveSpeed(5.0);
+        simSettings.setDebugActive(true);
         
         simManager.setSimSettings(simSettings);
         simManager.setCanvas(canvas);
         
-        
         simManager.getPopulationManager().initialize();
         
+        root.setStyle("-fx-font-size:20; -fx-background-color: rgb(90%,90%,100%);");
         
         new AnimationTimer()
         {
@@ -77,7 +97,10 @@ public class SimTest extends Application
             @Override
             public void handle(long now)
             {
+                long currentDay = simManager.getFrameCount() / simSettings.getDayLength() + 1;
+                
                 simManager.update();
+                dayLabel.setText("Day: " + currentDay);
             }
         }.start();
         

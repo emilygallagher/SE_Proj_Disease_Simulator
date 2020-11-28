@@ -149,4 +149,10 @@ public final class Utils
             return new Point2D(x, y);
         }
     }
+    
+    // Copy
+    public static Point2D copy(Point2D point)
+    {
+        return new Point2D(point.getX(), point.getY());
+    }
 }

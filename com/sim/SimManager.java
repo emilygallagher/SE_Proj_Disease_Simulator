@@ -1,6 +1,7 @@
 package com.sim;
 
 import java.util.List;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -103,6 +104,11 @@ public class SimManager
         return frameCount_ / simSettings_.getDayLength();
     }
     
+    public boolean isNewDay()
+    {
+        return getFrameCount() % simSettings_.getDayLength() == 0;
+    }
+    
     // Playback Control
     public void startSimulation()
     {
@@ -133,35 +139,26 @@ public class SimManager
         if (canvas_ != null)
         {
             List<Person> people = populationManager_.getPeopleUnmodifiable();
-            double radius = simSettings_.getPersonRadius();
-            double diameter = radius * 2;
             
             gc_.setFill(Color.WHITE);
             gc_.fillRect(0.0, 0.0, canvas_.getWidth(), canvas_.getHeight());
-            
-            if (simSettings_.isDebugActive())
-            {
-                debugDraw(people);
-            }
     
             for (Person person : people)
             {
-                double x = person.getCurrentPosition().getX() - radius;
-                double y = person.getCurrentPosition().getY() - radius;
-                HealthState state = person.getState();
+                Point2D position = person.getMovement().getCurrentLocation();
                 
-                gc_.setFill(state.getFillColor());
-                gc_.setStroke(state.getStrokeColor());
-                gc_.setLineWidth(1.0);
-                gc_.fillOval(x, y, diameter, diameter);
-                gc_.strokeOval(x, y, diameter, diameter);
+                // Debug draw that displays the area in which the disease can spread over.
+                if (simSettings_.isDebugActive() && person.getState().getHealthStatus().canInfect())
+                {
+                    drawSpread(position);
+                }
                 
-                // Additional debug draw that marks the real position of the person.
+                drawPerson(position, person.getState().getHealthStatus());
+                
+                // Debug draw that marks the exact center position of the person.
                 if (simSettings_.isDebugActive())
                 {
-                    gc_.setFill(Color.BLACK);
-                    gc_.fillOval(person.getCurrentPosition().getX(),
-                        person.getCurrentPosition().getY(), 2.0, 2.0);
+                    drawPoint(position);
                 }
             }
     
@@ -169,8 +166,44 @@ public class SimManager
         }
     }
     
-    private void debugDraw(List<Person> people)
+    private void drawPerson(Point2D position, HealthStatus healthStatus)
     {
-        // TODO
+        double radius = simSettings_.getPersonRadius();
+        drawCircle(position, radius, healthStatus.getFillColor(), healthStatus.getStrokeColor(), 1.0);
+    }
+    
+    private void drawSpread(Point2D position)
+    {
+        double radius = simSettings_.getDisease().getSpreadDistance();
+        double r = Color.INDIANRED.getRed();
+        double g = Color.INDIANRED.getGreen();
+        double b = Color.INDIANRED.getBlue();
+        drawCircle(position, radius, new Color(r, g, b, 0.4), null, 0.0);
+    }
+    
+    private void drawPoint(Point2D position)
+    {
+        drawCircle(position, 2, Color.BLACK, null, 0.0);
+    }
+    
+    private void drawCircle(Point2D center, double radius, Color fillColor, Color strokeColor,
+        double strokeWidth)
+    {
+        double diameter = radius * 2;
+        double x = center.getX() - radius;
+        double y = center.getY() - radius;
+        
+        if (fillColor != null)
+        {
+            gc_.setFill(fillColor);
+            gc_.fillOval(x, y, diameter, diameter);
+        }
+        
+        if (strokeColor != null && strokeWidth > 0)
+        {
+            gc_.setStroke(strokeColor);
+            gc_.setLineWidth(strokeWidth);
+            gc_.strokeOval(x, y, diameter, diameter);
+        }
     }
 }

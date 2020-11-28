@@ -10,6 +10,9 @@ PURPOSE OF PROJECT: Simulate how various diseases can spread from person
                     can reduce the rate at which diseases spread.
 VERSION or DATE: 0.4
 HOW TO START THIS PROJECT:
-AUTHORS:
+AUTHORS: John Kulins (Leader, UI Layout)
+         James Meurer (Research and Development)
+         Emily Gallagher (Back-end)
+         Thomas Kohut (UI Design, Color Schemes)
 USER INSTRUCTIONS:
 

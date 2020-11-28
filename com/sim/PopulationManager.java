@@ -7,156 +7,147 @@ import javafx.scene.canvas.Canvas;
 
 import static java.util.Collections.unmodifiableList;
 
-/**
- * A manager object that controls all of the people within the simulation.
- *
- * @author Emily Gallagher
- * @version 1.1
- * @since 0.2
- */
 public class PopulationManager
 {
     //----- FIELDS -----
-    private SimManager simManager_;
+    private final SimManager simManager_;
+    
     private List<Person> people_;
     
+    private Point2D minXY_;
+    
+    private Point2D maxXY_;
+    
+    private double minSpeed_;
+    
+    private double maxSpeed_;
+    
     //----- CONSTRUCTORS -----
-    public PopulationManager(SimManager simManager)
+    PopulationManager(SimManager simManager)
     {
         simManager_ = simManager;
+        people_ = null;
     }
     
     //----- METHODS -----
     // Get
-    public SimManager getSimManager()
-    {
-        return simManager_;
-    }
-    
-    public SimSettings getSimSettings()
-    {
-        return simManager_.getSimSettings();
-    }
-    
     public List<Person> getPeopleUnmodifiable()
     {
         return unmodifiableList(people_);
     }
     
-    //
+    public SimManager getSimManager()
+    {
+        return simManager_;
+    }
+    
+    SimSettings getSimSettings()
+    {
+        return simManager_.getSimSettings();
+    }
+    
+    Point2D getMinXY()
+    {
+        double radius = getSimSettings().getPersonRadius();
+        
+        return new Point2D(radius, radius);
+    }
+    
+    Point2D getMaxXY()
+    {
+        Canvas canvas = simManager_.getCanvas();
+        double radius = getSimSettings().getPersonRadius();
+        
+        return new Point2D(canvas.getWidth() - radius, canvas.getHeight() - radius);
+    }
+    
+    double getMinSpeed()
+    {
+        return getSimSettings().getMinMoveSpeed();
+    }
+    
+    double getMaxSpeed()
+    {
+        return getSimSettings().getMaxMoveSpeed();
+    }
+    
+    // Initialization
+    public boolean isInitialized()
+    {
+        return people_ != null;
+    }
+    
     public void initialize()
     {
-        int population = simManager_.getSimSettings().getTotalPopulation();
-        people_ = new ArrayList<>(population);
+        int totalPopulation = getSimSettings().getTotalPopulation();
+        int startingInfected = getSimSettings().getStartingInfected();
         
-        for (int i = 0; i < population; i++)
+        people_ = new ArrayList<>(totalPopulation);
+        
+        for (int i = 0; i < totalPopulation; i++)
         {
-            // Get the bounds in which the person can travel between.
-            Canvas canvas = getSimManager().getCanvas();
-            double offset = getSimSettings().getPersonRadius();
-            Point2D minXY = new Point2D(offset, offset);
-            Point2D maxXY = new Point2D(canvas.getWidth() - offset, canvas.getHeight() - offset);
-    
-            // Generate positions
-            Point2D startingPosition = Utils.getRandomPoint2D(minXY, maxXY);
-            Point2D targetPosition = Utils.getRandomPoint2D(minXY, maxXY);
-    
-            // Generate new speed.
-            double minSpeed = getSimSettings().getMinMoveSpeed();
-            double maxSpeed = getSimSettings().getMaxMoveSpeed();
-            double speed = Utils.getRandomRange(minSpeed, maxSpeed);
+            HealthStatus healthStatus = i < startingInfected
+                ? HealthStatus.INCUBATING
+                : HealthStatus.HEALTHY;
+            Person person = new Person();
+            Point2D minXY = getMinXY();
+            Point2D maxXY = getMaxXY();
             
-            HealthState state = i < getSimSettings().getStartingInfected() - 1
-                ? HealthState.ASYMPTOMATIC_INCUBATING : HealthState.HEALTHY;
+            person.getMovement().setCurrentLocation(Utils.getRandomPoint2D(minXY, maxXY));
+            person.getMovement().randomizeTarget(minXY, maxXY, getMinSpeed(), getMaxSpeed());
+            person.getState().setHealthStatus(healthStatus);
             
-            Person person = new Person(this, startingPosition, targetPosition, speed, state);
             people_.add(person);
         }
     }
     
-    /**
-     * Updates the states and positions of all {@code Person} objects associated with this
-     * {@code Population Manager}.
-     */
     public void updateAll()
     {
-        // Update States & Positions
+        Disease disease = getSimSettings().getDisease();
+        double modifier = getSimSettings().getTotalModifier();
+        boolean isSelfIsolationActive = getSimSettings().isSelfIsolationActive();
+        
         for (Person person : people_)
         {
-            updateState(person);
-            
-            if (person.getState() != HealthState.SELF_ISOLATING
-                && person.getState() != HealthState.DECEASED)
+            if (getSimManager().isNewDay())
             {
-                person.move();
+                person.getState().update(disease, modifier, isSelfIsolationActive);
+            }
+            
+            if (person.getState().getHealthStatus().canMove())
+            {
+                person.getMovement().move(getMinXY(), getMaxXY(), getMinSpeed(), getMaxSpeed());
             }
         }
         
-        //TODO: Try Infection
-        
+        // TODO: Check new infection
+        for (int i = 0; i < people_.size() - 1; i++)
+        {
+            Person personI = people_.get(i);
+            
+            for (int j = i + 1; j < people_.size(); j++)
+            {
+                Person personJ = people_.get(j);
+                tryInfection(personI, personJ);
+                tryInfection(personJ, personI);
+            }
+        }
     }
     
-    private void updateState(Person person)
+    private void tryInfection(Person infected, Person nonInfected)
     {
-        HealthState nextState;
-        HealthState currentState = person.getState();
-        Disease disease = getSimSettings().getDisease();
+        Point2D infectedLocation = infected.getMovement().getCurrentLocation();
+        Point2D nonInfectedLocation = infected.getMovement().getCurrentLocation();
+        double peopleDistance = infectedLocation.distance(nonInfectedLocation);
+        double spreadDistance = getSimSettings().getDisease().getSpreadDistance();
+        HealthStatus infectedStatus = infected.getState().getHealthStatus();
+        State nonInfectedState = nonInfected.getState();
         
-        if (currentState == HealthState.ASYMPTOMATIC_INCUBATING
-            && person.getStateTimer() >= disease.getIncubationDays())
+        if (peopleDistance <= spreadDistance
+            && infectedStatus.canInfect()
+            && nonInfectedState.getHealthStatus().canBeInfected())
         {
-            /*
-            If the random number is less than or equal to the asymptomatic rate, then the
-            person's state becomes the extended asymptomatic state.
-             */
-            if (Utils.RANDOM.nextFloat() <= disease.getAsymptomaticRate())
-            {
-                nextState = HealthState.ASYMPTOMATIC_EXTENDED;
-            }
-            /*
-            ... else, if the simulation has self-isolation activated, the state becomes the
-            self-isolation state, preventing the person from spreading the disease.
-             */
-            else if (getSimSettings().isSelfIsolationActive())
-            {
-                nextState = HealthState.SELF_ISOLATING;
-            }
-            /*
-            ... else, the person displays symptoms and can still move around and spread the
-            disease.
-             */
-            else
-            {
-                nextState = HealthState.SYMPTOMATIC;
-            }
-        
-            person.setState(nextState);
-            person.setStateTimer(0);
-        }
-        /*
-        ... else, if the infected person is in symptomatic phase (even if they aren't actually
-        showing any symptoms)...
-         */
-        else if ((currentState == HealthState.ASYMPTOMATIC_EXTENDED
-            || currentState == HealthState.SYMPTOMATIC
-            || currentState == HealthState.SELF_ISOLATING)
-            && person.getStateTimer() >= disease.getInfectionDays())
-        {
-            if (Utils.RANDOM.nextFloat() <= disease.getDeathRate())
-            {
-                nextState = HealthState.DECEASED;
-            }
-            else
-            {
-                nextState = HealthState.CURED;
-            }
-        
-            person.setState(nextState);
-            person.setStateTimer(0);
-        }
-        else
-        {
-            person.incrementStateTimer();
+            nonInfectedState.setCheckInfection(true);
         }
     }
 }
