@@ -64,7 +64,7 @@ public class UITest extends Application
         root2.setStyle( "-fx-font-size:20; -fx-background-color: rgb(80%,80%,80%);" );
 
         BorderPane root = new BorderPane();
-        Scene mainScene = new Scene(root, 800, 500);
+        Scene mainScene = new Scene(root, 1000, 500);
 
         mainStage.setScene( mainScene );
         MenuBar bar = new MenuBar();
@@ -92,14 +92,13 @@ public class UITest extends Application
 
         Label prevOpt = new Label("Preventative Measure:");
         ComboBox<String> prevOpts = new ComboBox<String>();
-        prevOpts.getItems().addAll("Choose one", "Masks", "Option 2", "Option 3");
+        prevOpts.getItems().addAll("Choose one", "Masks", "Distance", "Masks and Distace");
         prevOpts.setValue("Choose one");
 
         // ------------------Population Information-----------------------------
         Label TotPop = new Label("Total Population");
         Label InfPop = new Label("Infected Population");
         HBox row1 = new HBox();
-        HBox row2 = new HBox();// adds in the names for HBoxes
         TextField TPint  = new TextField();TPint.setMaxWidth(80);
         TextField IPint  = new TextField();IPint.setMaxWidth(80);
 
@@ -113,7 +112,7 @@ public class UITest extends Application
                     }
                 }
             });
-            
+
         // force the field to be numeric only
         IPint.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -139,7 +138,7 @@ public class UITest extends Application
                     }
                 }
             });
-            
+
         // -------------------Button--------------------------------------
         Button startButton = new Button("Start");
         // --------------------------------------------------------------
@@ -149,13 +148,16 @@ public class UITest extends Application
         designArea.addRow( 3, DayTxt,DayInt, CheckDay);
         designArea.addRow( 4,startButton );
 
-        // region where text is drawn
-        int canvasWidth = 800;
-        int canvasHeight = 200;
+        // region where the sim will go. it is white to display the locale
+        int canvasWidth = 300;
+        int canvasHeight = 300;
         Canvas canvas = new Canvas(canvasWidth, canvasHeight);
         GraphicsContext context = canvas.getGraphicsContext2D();
-
-        root2.getChildren().addAll( designArea, canvas );
+        context.setFill( Color.WHITE );
+        context.fillRect(0,0, canvasWidth,canvasHeight);
+        HBox row2 = new HBox();// adds in the names for HBoxes
+        row2.getChildren().addAll( designArea, canvas );
+        root2.getChildren().addAll(row2);
 
         // event and listener to activate on changes.
 
@@ -192,7 +194,7 @@ public class UITest extends Application
         }
 
         bar.getMenus().addAll(aboutMenu);
-  
+
         //Displays Help Section
         optMenu[0].setOnAction(
             (ActionEvent event) ->
