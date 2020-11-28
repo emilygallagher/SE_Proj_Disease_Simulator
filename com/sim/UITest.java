@@ -64,7 +64,7 @@ public class UITest extends Application
         root2.setStyle( "-fx-font-size:20; -fx-background-color: rgb(80%,80%,80%);" );
 
         BorderPane root = new BorderPane();
-        Scene mainScene = new Scene(root, 900, 900);
+        Scene mainScene = new Scene(root, 800, 500);
 
         mainStage.setScene( mainScene );
         MenuBar bar = new MenuBar();
