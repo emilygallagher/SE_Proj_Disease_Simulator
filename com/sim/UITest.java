@@ -34,7 +34,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  *
- * @author John Kulins
+ * @author John Kulins, Thomas Kohut
  * @version 1.0
  * @since 0.1
  */
@@ -64,7 +64,7 @@ public class UITest extends Application
         root2.setStyle( "-fx-font-size:20; -fx-background-color: rgb(80%,80%,80%);" );
 
         BorderPane root = new BorderPane();
-        Scene mainScene = new Scene(root, 1000, 500);
+        Scene mainScene = new Scene(root, 800, 800);
 
         mainStage.setScene( mainScene );
         MenuBar bar = new MenuBar();
@@ -72,93 +72,79 @@ public class UITest extends Application
         root.setCenter(root2);
 
         // custom code below --------------------------------------------
-
         GridPane designArea = new GridPane();
         designArea.setHgap(5);
         designArea.setVgap(9);
         designArea.setPadding( new Insets(8) );
 
-        // --------------------------------------------------------------
-
-        Label customLabel = new Label("Text:");
-
-        TextField customText = new TextField("Sample Text");
-
-        // Disease/Prevention Options (drop down list) --------------------------------------------------
-        Label disOpt = new Label("Diseases:");
-        ComboBox<String> disOpts = new ComboBox<String>();
-        disOpts.getItems().addAll("Choose one", "Covid-19", "Disease 2", "Disease 3");
-        disOpts.setValue("Choose one");
-
-        Label prevOpt = new Label("Preventative Measure:");
-        ComboBox<String> prevOpts = new ComboBox<String>();
-        prevOpts.getItems().addAll("Choose one", "Masks", "Distance", "Masks and Distace");
-        //masks 70% reduction. distance 30% reduction. masks and distance 90% reduction.
-        prevOpts.setValue("Choose one");
-
         // ------------------Population Information-----------------------------
-        Label TotPop = new Label("Total Population");
-        Label InfPop = new Label("Infected Population");
         HBox row1 = new HBox();
-        TextField TPint  = new TextField();TPint.setMaxWidth(80);
-        TextField IPint  = new TextField();IPint.setMaxWidth(80);
-
-        // force the field to be numeric only
-        TPint.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue,
-                String newValue) {
-                    if (!newValue.matches("\\d*")) {
-                        TPint.setText(newValue.replaceAll("[^\\d]", ""));
-                    }
-                }
-            });
-
-        // force the field to be numeric only
-        IPint.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue,
-                String newValue) {
-                    if (!newValue.matches("\\d*")) {
-                        IPint.setText(newValue.replaceAll("[^\\d]", ""));
-                    }
-                }
-            });
         // ------------------Days section-------------------------------------------
-
-        Label DayTxt = new Label   ("Days to Simulate");
-        TextField DayInt  = new TextField();DayInt.setMaxWidth(80);
+        //TextField DayInt  = new TextField();DayInt.setMaxWidth(80);
         CheckBox CheckDay = new CheckBox("Simulate days?");
-        // force the field to be numeric only
-        DayInt.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue,
-                String newValue) {
-                    if (!newValue.matches("\\d*")) {
-                        DayInt.setText(newValue.replaceAll("[^\\d]", ""));
-                    }
-                }
-            });
 
         // -------------------Button--------------------------------------
         Button startButton = new Button("Start");
         // --------------------------------------------------------------
-        designArea.addRow( 0,disOpt,disOpts  );
-        designArea.addRow( 1,prevOpt, prevOpts  );
-        designArea.addRow( 2,TotPop,TPint, InfPop,IPint  );
-        designArea.addRow( 3, DayTxt,DayInt, CheckDay);
-        designArea.addRow( 4,startButton );
 
         // region where the sim will go. it is white to display the locale
-        int canvasWidth = 300;
-        int canvasHeight = 300;
+        int canvasWidth = 800;
+        int canvasHeight = 500;
         Canvas canvas = new Canvas(canvasWidth, canvasHeight);
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.setFill( Color.WHITE );
         context.fillRect(0,0, canvasWidth,canvasHeight);
         HBox row2 = new HBox();// adds in the names for HBoxes
-        row2.getChildren().addAll( designArea, canvas );
-        root2.getChildren().addAll(row2);
+        root2.getChildren().addAll(designArea, canvas);
+
+        //Label array
+        Label[] labs = new Label[5];
+        String[] labStr = {"Diseases:","Preventative Measure:","Total Population","Infected Population","Days to Simulate"};
+
+        //TextField array
+        TextField[] tf = new TextField[3];
+
+        //ComboBox array
+        ComboBox<String>[] cb = new ComboBox[2];
+
+        //Assigns UI objects
+        for(int x=0; x<labs.length;x++) {
+            labs[x] = new Label(labStr[x]);
+
+            if(x<2) {
+                cb[x] = new ComboBox<String>();
+                cb[x].setValue("Choose one");
+            }
+            //Handles text fields
+            if(x<3) {
+                tf[x] = new TextField();tf[x].setMaxWidth(80);
+
+                //Forces numeric only entries
+                tf[x].textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue,
+                        String newValue) {
+                            for(int y=0; y<tf.length; y++) {
+                                if (!newValue.matches("\\d*")) {
+                                    tf[y].setText(newValue.replaceAll("[^\\d]", ""));
+                                }
+                            }
+                        }
+                });
+            }
+        }
+
+        //Adds options to combo boxes
+        cb[0].getItems().addAll("Choose one", "Covid-19", "Disease 2", "Disease 3");
+        cb[1].getItems().addAll("Choose one", "Masks", "Distance", "Masks and Distance");
+
+        //Sets Default value
+
+        designArea.addRow( 0,labs[0],cb[0]  );
+        designArea.addRow( 1,labs[1], cb[1]  );
+        designArea.addRow( 2,labs[2],tf[0], labs[3],tf[1]  );
+        designArea.addRow( 3, labs[4],tf[2], CheckDay);
+        designArea.addRow( 4,startButton );
 
         // event and listener to activate on changes.
 
@@ -167,7 +153,7 @@ public class UITest extends Application
             () ->
             {
                 //to obtain text box data it is a simple .getText function.
-                if(disOpts.getValue()=="")//"" is the name in the dropdown box also they will be if statements.
+                if(cb[0].getValue()=="")//"" is the name in the dropdown box also they will be if statements.
                 {}
                 if ( CheckDay.isSelected() )//checking if a box was checked if it is it will run this code
                 {   }
