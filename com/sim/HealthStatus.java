@@ -51,7 +51,7 @@ public enum HealthStatus
     
     public boolean canBeInfected()
     {
-        return this != HealthStatus.HEALTHY;
+        return this == HealthStatus.HEALTHY;
     }
     
     public boolean canMove()

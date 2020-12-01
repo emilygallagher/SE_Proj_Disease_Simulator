@@ -71,7 +71,9 @@ public class State
                 if (checkInfection_)
                 {
                     // TODO: Infection chance
-                    //if ()
+                    double r = Utils.RANDOM.nextDouble();
+                    
+                    if (r - totalModifier <= disease.getInfectionRate())
                     {
                         setHealthStatus(HealthStatus.INCUBATING);
                         setDayCounter(0L);
