@@ -1,6 +1,7 @@
 package com.sim;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -142,12 +143,43 @@ public class PopulationManager
         double spreadDistance = getSimSettings().getDisease().getSpreadDistance();
         HealthStatus infectedStatus = infected.getState().getHealthStatus();
         State nonInfectedState = nonInfected.getState();
-        
+    
         if (peopleDistance <= spreadDistance
             && infectedStatus.canInfect()
             && nonInfectedState.getHealthStatus().canBeInfected())
         {
             nonInfectedState.setCheckInfection(true);
         }
+    }
+    
+    // Status Counts
+    public String statusCountsFormatted()
+    {
+        int[] counts = statusCountsArray();
+        String str = "\n";
+        
+        HealthStatus[] statuses = HealthStatus.values();
+        
+        for (int i = 0; i < counts.length; i++)
+        {
+            str += String.format("%1$-15s:%2$4d\n", statuses[i], counts[i]);
+        }
+        
+        return str;
+    }
+    
+    public int[] statusCountsArray()
+    {
+        int len = HealthStatus.values().length;
+        int[] counts = new int[len];
+        
+        for (Person person : people_)
+        {
+            int ordinal = person.getState().getHealthStatus().ordinal();
+            
+            counts[ordinal]++;
+        }
+        
+        return counts;
     }
 }
