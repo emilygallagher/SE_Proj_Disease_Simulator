@@ -151,6 +151,12 @@ public final class Utils
     }
     
     // Copy
+    /**
+     * Creates a copy of the specified {@code Point2D} object.
+     *
+     * @param point The {@code Point2D} to be copied.
+     * @return A copy of the specified {@code Point2D}.
+     */
     public static Point2D copy(Point2D point)
     {
         return new Point2D(point.getX(), point.getY());
