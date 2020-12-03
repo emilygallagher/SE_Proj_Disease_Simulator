@@ -32,7 +32,7 @@ import javafx.scene.image.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-/**
+/**UI for Disease Manager
  *
  * @author John Kulins, Thomas Kohut
  * @version 1.0
@@ -60,6 +60,7 @@ public class UITest extends Application
     {
         mainStage.setTitle("Disease Simulator");
 
+        //Sets up application base
         VBox root2 = new VBox();
         root2.setStyle( "-fx-font-size:20; -fx-background-color: rgb(80%,80%,80%);" );
 
@@ -71,21 +72,16 @@ public class UITest extends Application
         root.setTop(bar);
         root.setCenter(root2);
 
-        // custom code below --------------------------------------------
         GridPane designArea = new GridPane();
         designArea.setHgap(5);
         designArea.setVgap(9);
         designArea.setPadding( new Insets(8) );
 
-        // ------------------Population Information-----------------------------
-        HBox row1 = new HBox();
-        // ------------------Days section-------------------------------------------
-        //TextField DayInt  = new TextField();DayInt.setMaxWidth(80);
+        //Days section
         CheckBox CheckDay = new CheckBox("Simulate days?");
 
-        // -------------------Button--------------------------------------
+        //Button
         Button startButton = new Button("Start");
-        // --------------------------------------------------------------
 
         // region where the sim will go. it is white to display the locale
         int canvasWidth = 800;
@@ -94,7 +90,6 @@ public class UITest extends Application
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.setFill( Color.WHITE );
         context.fillRect(0,0, canvasWidth,canvasHeight);
-        HBox row2 = new HBox();// adds in the names for HBoxes
         root2.getChildren().addAll(designArea, canvas);
 
         //Label array
@@ -115,6 +110,7 @@ public class UITest extends Application
                 cb[x] = new ComboBox<String>();
                 cb[x].setValue("Choose one");
             }
+            
             //Handles text fields
             if(x<3) {
                 tf[x] = new TextField();tf[x].setMaxWidth(80);
@@ -139,7 +135,6 @@ public class UITest extends Application
         cb[1].getItems().addAll("Choose one", "Masks", "Distance", "Masks and Distance");
 
         //Sets Default value
-
         designArea.addRow( 0,labs[0],cb[0]  );
         designArea.addRow( 1,labs[1], cb[1]  );
         designArea.addRow( 2,labs[2],tf[0], labs[3],tf[1]  );
@@ -147,14 +142,13 @@ public class UITest extends Application
         designArea.addRow( 4,startButton );
 
         // event and listener to activate on changes.
-
         // most generic functional interface: no inputs, no output, contains method run()
         Runnable updateFunction =
             () ->
             {
                 //to obtain text box data it is a simple .getText function.
                 if(cb[0].getValue()=="")//"" is the name in the dropdown box also they will be if statements.
-                {}
+                { }
                 if ( CheckDay.isSelected() )//checking if a box was checked if it is it will run this code
                 {   }
             };
@@ -216,20 +210,19 @@ public class UITest extends Application
             });     
 
         //Closes Application
-        // to add a shortcut key combination to a menu item:
+        //adds shortcut key combination to a menu item:
         optMenu[2].setAccelerator(new KeyCodeCombination( KeyCode.Q, KeyCodeCombination.CONTROL_DOWN ));
 
         optMenu[2].setOnAction(
             (ActionEvent event) ->
             {
-                System.exit(0);// this exits the program
+                System.exit(0); //this exits the program
             }); 
 
         //start button functionality
         startButton.setOnAction((ActionEvent event) ->
             {
-
-            
+  
             });
         mainStage.show();
     }
