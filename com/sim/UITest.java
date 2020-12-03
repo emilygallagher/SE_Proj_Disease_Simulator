@@ -64,7 +64,7 @@ public class UITest extends Application
         root2.setStyle( "-fx-font-size:20; -fx-background-color: rgb(80%,80%,80%);" );
 
         BorderPane root = new BorderPane();
-        Scene mainScene = new Scene(root, 800, 800);
+        Scene mainScene = new Scene(root, 1250, 1000);
 
         mainStage.setScene( mainScene );
         MenuBar bar = new MenuBar();
@@ -89,13 +89,14 @@ public class UITest extends Application
 
         // region where the sim will go. it is white to display the locale
         int canvasWidth = 800;
-        int canvasHeight = 500;
+        int canvasHeight = 800;
         Canvas canvas = new Canvas(canvasWidth, canvasHeight);
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.setFill( Color.WHITE );
         context.fillRect(0,0, canvasWidth,canvasHeight);
         HBox row2 = new HBox();// adds in the names for HBoxes
-        root2.getChildren().addAll(designArea, canvas);
+        row2.getChildren().addAll(designArea, canvas);
+        root2.getChildren().addAll(row2);
 
         //Label array
         Label[] labs = new Label[5];
@@ -140,11 +141,13 @@ public class UITest extends Application
 
         //Sets Default value
 
-        designArea.addRow( 0,labs[0],cb[0]  );
-        designArea.addRow( 1,labs[1], cb[1]  );
-        designArea.addRow( 2,labs[2],tf[0], labs[3],tf[1]  );
-        designArea.addRow( 3, labs[4],tf[2], CheckDay);
-        designArea.addRow( 4,startButton );
+        designArea.addRow( 0,labs[0],cb[0]);
+        designArea.addRow( 1,labs[1], cb[1]);
+        designArea.addRow( 2,labs[2],tf[0]);
+        designArea.addRow( 3, labs[3],tf[1]);  
+        designArea.addRow( 4, labs[4],tf[2]);
+        designArea.addRow( 5, CheckDay);
+        designArea.addRow( 6,startButton );
 
         // event and listener to activate on changes.
 
