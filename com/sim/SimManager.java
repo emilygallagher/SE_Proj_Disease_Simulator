@@ -131,32 +131,48 @@ public class SimManager
     }
     
     // Playback Control
+    public void newSimulation()
+    {
+        if (simSettings_ != null && populationManager_ != null && canvas_ != null)
+        {
+            populationManager_.initialize();
+            isRunning_ = false;
+            frameCount_ = 0;
+        }
+        
+        draw();
+    }
+    
     public void startSimulation()
     {
-        // TODO
+        if (populationManager_.isInitialized())
+        {
+            isRunning_ = true;
+        }
     }
     
     public void pauseSimulation()
     {
-        // TODO
-    }
-    
-    public void resetSimulation()
-    {
-        // TODO
+        isRunning_ = false;
     }
     
     /** Updates all aspects of the simulation by 1 frame. */
     public void update()
     {
-        // TODO
-        frameCount_++;
-        populationManager_.updateAll();
-        draw();
+        if (isRunning_)
+        {
+            frameCount_++;
+            populationManager_.updateAll();
+            draw();
+            
+            if (simSettings_.getMaxDays() >= getDay())
+            {
+                isRunning_ = false;
+            }
+        }
     }
     
     // Draw
-    
     /**
      * Draws all {@code Person} objects associated with the simulation and any debug drawings
      * based on various settings.
