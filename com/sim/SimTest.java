@@ -145,5 +145,7 @@ public class SimTest extends Application
         stage.setTitle("Simulation Test");
         stage.setScene(scene);
         stage.show();
+      
+    
     }
 }

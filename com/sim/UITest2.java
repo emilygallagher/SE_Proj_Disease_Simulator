@@ -1,6 +1,5 @@
 package com.sim;
-VOID THIS PORGRAM IS VOID DUE TO BETTER ONE 
-I AM KEEPING THIS HERE FOR TEST AND REFERENCE PURPOSES 
+
 import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -39,7 +38,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * @version 1.0
  * @since 0.1
  */
-public class UITest extends Application
+public class UITest2 extends Application
 {
     private String el = "", el2 = "";
     private boolean isValid, isValid2;
@@ -70,7 +69,7 @@ public class UITest extends Application
         root2.setStyle( "-fx-font-size:20; -fx-background-color: rgb(80%,80%,80%);" );
 
         BorderPane root = new BorderPane();
-        Scene mainScene = new Scene(root, 1250, 1000);
+        Scene mainScene = new Scene(root, 1350, 1000);
 
         mainStage.setScene( mainScene );
         MenuBar bar = new MenuBar();
@@ -80,13 +79,15 @@ public class UITest extends Application
         GridPane designArea = new GridPane();
         designArea.setHgap(5);
         designArea.setVgap(9);
-        designArea.setPadding( new Insets(8) );
+        designArea.setPadding( new Insets(4) );
 
         // ------------------Days section-------------------------------------------
         CheckBox CheckDay = new CheckBox("Simulate days?");
 
         // -------------------Button--------------------------------------
-        Button startButton = new Button("Start");
+        Button startButton = new Button("initialize");
+        Button startBtn= new Button("Start");
+        Button pauseBtn = new Button("Pause");
 
         // region where the sim will go. it is white to display the locale
         int canvasWidth = 800;
@@ -96,6 +97,8 @@ public class UITest extends Application
         context.setFill(Color.WHITE);
         context.fillRect(0,0, canvasWidth,canvasHeight);
 
+        SimManager simManager = new SimManager();
+        simManager.setCanvas(canvas);
         //Inserts UI into screen
         HBox row2 = new HBox();// adds in the names for HBoxes
         row2.getChildren().addAll(designArea, canvas);
@@ -143,7 +146,9 @@ public class UITest extends Application
         cb[1].getItems().addAll("Choose one", Databases.getPrecautionCopy(0).getName(),
             Databases.getPrecautionCopy(1).getName(), Databases.getPrecautionCopy(2).getName(), 
             Databases.getPrecautionCopy(3).getName());
-
+        //these 2 are specially for the updating of the stats
+        Label dayLabel = new Label("Day: 0");
+        Label countsLabel = new Label();
         //Sets Default value
 
         designArea.addRow( 0,labs[0],cb[0]);
@@ -152,7 +157,9 @@ public class UITest extends Application
         designArea.addRow( 3, labs[3],tf[1]);  
         designArea.addRow( 4, labs[4],tf[2]);
         designArea.addRow( 5, CheckDay);
-        designArea.addRow( 6,startButton );
+        designArea.addRow( 6,startButton,startBtn,pauseBtn );
+        designArea.addRow( 7,dayLabel);//this is part of the stats
+        designArea.addRow( 8, countsLabel); //this is part of the stats
 
         // event and listener to activate on changes.
 
@@ -161,25 +168,8 @@ public class UITest extends Application
             () ->
             {
                 //to obtain text box data it is a simple .getText function.
-                Disease disease= new Disease();
-                for (int cycle=0; cycle > Databases.getDiseasesLength();cycle++){   
-                    if(cb[0].getValue()==Databases.getDiseaseCopy(cycle).getName())//"" is the name in the dropdown box also they will be if statements.
-                    {
-                         disease = new Disease(Databases.getDiseaseCopy(cycle));
-                    }
-                }
-                for (int rotate=0; rotate > Databases.getPrecautionsLength();rotate++){   
-                    if(cb[1].getValue()==Databases.getPrecautionCopy(rotate).getName())//"" is the name in the dropdown box also they will be if statements.
-                    {
-                        SimSettings simSettings = new SimSettings(disease, Databases.getPrecautionCopy(rotate).getModifier() ,
-                        false,Integer.parseInt(tf[0].getText()), Integer.parseInt(tf[1].getText()), -1, 90,1.0,2.0, 7.5,false
-                        );
-                        //null, 0.0, false, 0, 0, -1, 90, 1.0, 2.0, 7.5, false
-                    }
-                }
 
-    };
-        
+            };
         // This is the menu bar section that is at the top
         Menu aboutMenu = new Menu("Options");
 
@@ -236,6 +226,17 @@ public class UITest extends Application
                 System.exit(0);// this exits the program
             }); 
 
+        //the timer////////////////////////////////// my marker
+        AnimationTimer simAnimTimer = new AnimationTimer()
+            {
+                @Override
+                public void handle(long now)
+                {
+                    simManager.update();
+                    dayLabel.setText("Day: " + (simManager.getDay() + 1));
+                    countsLabel.setText(simManager.getPopulationManager().statusCountsFormatted());
+                }
+            };
         //Variables used to start
         String[] dData = new String[2];
         int[] iData = new int[3];
@@ -249,18 +250,48 @@ public class UITest extends Application
                 if(!TFValidationCheck(labs, tf, cb, ea)) { //|| !CBTValidationCheck(labs, cb, ea)) {
                     ea.showAndWait();
                 } else {
-                    //Handles Textfields and ComboBoxes 
-                    for(int x = 0; x < iData.length; x++) {
-                        if(x <= 1) { //Combo Boxes
-
+                    //this is all pulled from the simTest class and modeled after it for simplicity reasons
+                    Disease disease= new Disease();
+                    SimSettings simSettings = new SimSettings();
+                    for (int cycle=0; cycle < Databases.getDiseasesLength();cycle++){   
+                        if(cb[0].getValue()==Databases.getDiseaseCopy(cycle).getName())//"" is the name in the dropdown box also they will be if statements.
+                        {
+                            disease = new Disease(Databases.getDiseaseCopy(cycle));
                         }
-                        iData[x] = Integer.parseInt(tf[x].getText()); //Text Fields
                     }
+                    for (int rotate=0; rotate < Databases.getPrecautionsLength();rotate++){   
+                        if(cb[1].getValue()==Databases.getPrecautionCopy(rotate).getName())//"" is the name in the dropdown box also they will be if statements.
+                        {
+                            simSettings = new SimSettings(disease, Databases.getPrecautionCopy(rotate).getModifier() ,
+                                false,Integer.parseInt(tf[0].getText()), Integer.parseInt(tf[1].getText()), -1, 90,10,2.0, 5.0,false);
+                            //null, 0.0, false, 0, 0, -1, 90, 1.0, 2.0, 7.5, false
+                        }
+                    }                    //
+                    simManager.setSimSettings(simSettings);
+                    simManager.newSimulation();
+                    dayLabel.setText("Day: 1");
 
-                    updateFunction.run();
+                    countsLabel.setText(simManager.getPopulationManager().statusCountsFormatted());
                 }
 
             });
+        startBtn.setOnAction
+        (
+            (ActionEvent event) ->
+            {
+                simManager.startSimulation();
+                simAnimTimer.start();
+            }
+        );
+
+        pauseBtn.setOnAction
+        (
+            (ActionEvent event) ->
+            {
+                simManager.pauseSimulation();
+                simAnimTimer.stop();
+            }
+        );
 
         mainStage.show();
     }
@@ -322,81 +353,3 @@ public class UITest extends Application
         return isValid;
     }
 }
-
-//scrap
-
-//ComboBox Validation Method
-
-// /**Checks each selection in ComboBox is valid. 
-// * True: All selections are valid
-// * False: At least one selection
-// */
-// private boolean CBTValidationCheck(Label[] labs, ComboBox<String>[] cbt, Alert ea) {
-// el2 = "";
-// isValid2 = true;
-
-// for (int x = 0; x < cbt.length; x++) {
-// //"" is the name in the dropdown box also they will be if statements.
-// if(cbt[x].getValue()=="Choose one")
-// {
-// el2 = el2 + "Please select a " + labs[x].getText() + ".\n";
-// isValid2 = false;
-// }
-
-// //Displays error message if anything is caught
-// if(x == cbt.length-1 && !isValid2) {
-// el = el + "\n" + el2;
-// ea.setContentText(el);
-// return isValid2;
-// }
-// }
-// return isValid2;
-// }
-
-//Refined version of below
-// if(TFValidationCheck(labs, tf, ea)) {
-// for (int x = 0; x < iData.length; x++) {
-// iData[x] = Integer.parseInt(tf[x].getText());
-// }
-// } else { 
-// if(CBTValidationCheck(labs, cb, ea)) {
-// for(int x = 0; x < cb.length; x++) {
-// }
-// } else {
-// ea.showAndWait();
-// }}
-
-//Base validation
-// el = "";
-// isValid = true;
-// try{
-// //Handles Textfields
-// for (int x = 0; x < iData.length; x++) {
-// //Checks if each entry is invalid (exceeds max, 
-// //if infected pop > total pop, etc). Throws error if true
-// if(tf[x].getText().isEmpty() || Integer.parseInt(tf[x].getText()) < 0) {
-// el = el + "\nInvalid entry at " + labs[x+2].getText() + 
-// ". Please enter a valid number.";
-
-// isValid = false;
-// } //else { if(x==1 && iDataInts[0] > Integer.parseInt(tf[x].getText())) {
-// else {
-
-// iData[x] = tf[x].getText();
-
-// iDataInts[x] = Integer.parseInt(iData[x]);
-
-// System.out.println(iDataInts[x]);
-// }
-
-// if(x == iData.length-1 && !isValid) {
-// ea.setContentText(el);
-// ea.showAndWait();
-// }
-// } 
-// }
-// catch(Exception e) {
-// ea.setContentText("Enter Finalized Credits");
-
-// Stage alertStage = (Stage)ea.getDialogPane().getScene().getWindow();
-// ea.showAndWait();

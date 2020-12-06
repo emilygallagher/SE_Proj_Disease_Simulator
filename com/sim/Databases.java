@@ -23,13 +23,18 @@ public final class Databases
         DISEASES_ = new Disease[]
         {
             // Initialize all Disease presets here.
-            
+            new Disease("Covid-19", 100, .037f, .1f,.018f , 14, 8),
+            new Disease("Influenza", 100, .037f, .1f,.018f , 14, 8)
+
         };
         
         PRECAUTIONS_ = new Precaution[]
         {
             // Initialize all precautionary measure presets here.
-            
+           new Precaution("None", 1),
+           new Precaution("Mask", .3f),
+           new Precaution("Distance", .2f),
+           new Precaution("Masks and Distance", .10f)
         };
     }
     
