@@ -262,8 +262,13 @@ public class UITest2 extends Application
                     for (int rotate=0; rotate < Databases.getPrecautionsLength();rotate++){
                         if(cb[1].getValue()==Databases.getPrecautionCopy(rotate).getName())//"" is the name in the dropdown box also they will be if statements.
                         {
+                            int simDays = CheckDay.isSelected() ?
+                                Integer.parseInt(tf[2].getText()) : -1;
+                            System.out.println(simDays);
+                            
                             simSettings = new SimSettings(disease, Databases.getPrecautionCopy(rotate).getModifier() ,
-                                false,Integer.parseInt(tf[0].getText()), Integer.parseInt(tf[1].getText()), -1, 90,10,2.0, 5.0,false);
+                                false,Integer.parseInt(tf[0].getText()),
+                                Integer.parseInt(tf[1].getText()), simDays, 90,10,2.0, 5.0,false);
                             //null, 0.0, false, 0, 0, -1, 90, 1.0, 2.0, 7.5, false
                         }
                     }                    //

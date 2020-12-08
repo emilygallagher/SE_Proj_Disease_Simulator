@@ -165,7 +165,8 @@ public class SimManager
             populationManager_.updateAll();
             draw();
             
-            if (simSettings_.getMaxDays() >= getDay())
+            int maxDays = simSettings_.getMaxDays();
+            if (maxDays > 0 && maxDays <= getDay())
             {
                 isRunning_ = false;
             }
