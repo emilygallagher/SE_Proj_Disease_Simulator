@@ -31,10 +31,10 @@ public final class Databases
         PRECAUTIONS_ = new Precaution[]
         {
             // Initialize all precautionary measure presets here.
-           new Precaution("None", 1),
-           new Precaution("Mask", .3f),
-           new Precaution("Distance", .2f),
-           new Precaution("Masks and Distance", .10f)
+           new Precaution("None", 1.0f),
+           new Precaution("Mask", 0.3f),
+           new Precaution("Distance", 0.2f),
+           new Precaution("Masks and Distance", 0.1f)
         };
     }
     

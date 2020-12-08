@@ -144,22 +144,22 @@ public class UITest2 extends Application
         //Adds options to combo boxes
         cb[0].getItems().addAll("Choose one", Databases.getDiseaseCopy(0).getName(), Databases.getDiseaseCopy(1).getName());
         cb[1].getItems().addAll("Choose one", Databases.getPrecautionCopy(0).getName(),
-            Databases.getPrecautionCopy(1).getName(), Databases.getPrecautionCopy(2).getName(), 
+            Databases.getPrecautionCopy(1).getName(), Databases.getPrecautionCopy(2).getName(),
             Databases.getPrecautionCopy(3).getName());
         //these 2 are specially for the updating of the stats
         Label dayLabel = new Label("Day: 0");
         Label countsLabel = new Label();
         //Sets Default value
 
-        designArea.addRow( 0,labs[0],cb[0]);
-        designArea.addRow( 1,labs[1], cb[1]);
-        designArea.addRow( 2,labs[2],tf[0]);
-        designArea.addRow( 3, labs[3],tf[1]);  
-        designArea.addRow( 4, labs[4],tf[2]);
-        designArea.addRow( 5, CheckDay);
-        designArea.addRow( 6,startButton,startBtn,pauseBtn );
-        designArea.addRow( 7,dayLabel);//this is part of the stats
-        designArea.addRow( 8, countsLabel); //this is part of the stats
+        designArea.addRow(0,labs[0], cb[0]);
+        designArea.addRow(1,labs[1], cb[1]);
+        designArea.addRow(2,labs[2], tf[0]);
+        designArea.addRow(3, labs[3], tf[1]);
+        designArea.addRow(4, labs[4], tf[2]);
+        designArea.addRow(5, CheckDay);
+        designArea.addRow(6, startButton, startBtn, pauseBtn );
+        designArea.addRow(7, dayLabel);//this is part of the stats
+        designArea.addRow(8, countsLabel); //this is part of the stats
 
         // event and listener to activate on changes.
 
@@ -186,7 +186,7 @@ public class UITest2 extends Application
             aboutMenu.getItems().addAll(optMenu[x]);
         }
 
-        bar.getMenus().addAll(aboutMenu); 
+        bar.getMenus().addAll(aboutMenu);
 
         //Displays Help Section
         optMenu[0].setOnAction(
@@ -200,7 +200,7 @@ public class UITest2 extends Application
 
                 Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
                 infoAlert.showAndWait();
-            });      
+            });
 
         //Displays Credit Section
         optMenu[1].setOnAction(
@@ -214,7 +214,7 @@ public class UITest2 extends Application
 
                 Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
                 infoAlert.showAndWait();
-            });     
+            });
 
         //Closes Application
         // to add a shortcut key combination to a menu item:
@@ -224,7 +224,7 @@ public class UITest2 extends Application
             (ActionEvent event) ->
             {
                 System.exit(0);// this exits the program
-            }); 
+            });
 
         //the timer////////////////////////////////// my marker
         AnimationTimer simAnimTimer = new AnimationTimer()
@@ -253,13 +253,13 @@ public class UITest2 extends Application
                     //this is all pulled from the simTest class and modeled after it for simplicity reasons
                     Disease disease= new Disease();
                     SimSettings simSettings = new SimSettings();
-                    for (int cycle=0; cycle < Databases.getDiseasesLength();cycle++){   
+                    for (int cycle=0; cycle < Databases.getDiseasesLength();cycle++){
                         if(cb[0].getValue()==Databases.getDiseaseCopy(cycle).getName())//"" is the name in the dropdown box also they will be if statements.
                         {
                             disease = new Disease(Databases.getDiseaseCopy(cycle));
                         }
                     }
-                    for (int rotate=0; rotate < Databases.getPrecautionsLength();rotate++){   
+                    for (int rotate=0; rotate < Databases.getPrecautionsLength();rotate++){
                         if(cb[1].getValue()==Databases.getPrecautionCopy(rotate).getName())//"" is the name in the dropdown box also they will be if statements.
                         {
                             simSettings = new SimSettings(disease, Databases.getPrecautionCopy(rotate).getModifier() ,
@@ -270,7 +270,7 @@ public class UITest2 extends Application
                     simManager.setSimSettings(simSettings);
                     simManager.newSimulation();
                     dayLabel.setText("Day: 1");
-
+                    
                     countsLabel.setText(simManager.getPopulationManager().statusCountsFormatted());
                 }
 
@@ -296,7 +296,7 @@ public class UITest2 extends Application
         mainStage.show();
     }
 
-    /**Checks each user input is valid. 
+    /**Checks each user input is valid.
      * True: All inputs are valid
      * False: At least one input is invalid. Adds invalid entry to string to be used in Alert Box.
      */
@@ -325,20 +325,20 @@ public class UITest2 extends Application
                 el = el + labs[x+2].getText() + " is invalid. Please enter a valid number.\n";
 
                 isValid = false;
-            } 
+            }
 
             //Checks if Infected Population exceeds Total Population
-            if(x==1 && !tf[x].getText().isEmpty() && 
+            if(x==1 && !tf[x].getText().isEmpty() &&
             Integer.parseInt(tf[1].getText()) > Integer.parseInt(tf[0].getText())) {
                 el = el + "Infected Population cannot exceed Total Population.\n";
                 isValid = false;
             }
 
             //Checks if any value exceeds max
-            if(x <= 1 && !tf[x].getText().isEmpty() && 
+            if(x <= 1 && !tf[x].getText().isEmpty() &&
             Integer.parseInt(tf[x].getText()) > MAXPOP) {
-                el = el + labs[x+2].getText() + 
-                " exceeds the maximum limit. Please lower your entry by at least " 
+                el = el + labs[x+2].getText() +
+                " exceeds the maximum limit. Please lower your entry by at least "
                 + (Integer.parseInt(tf[x].getText()) - MAXPOP) + ".\n";
                 isValid = false;
             }

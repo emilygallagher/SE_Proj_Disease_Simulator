@@ -105,10 +105,7 @@ public class State
             case HEALTHY:
                 if (checkInfection_)
                 {
-                    // Generate a random value and check it against the infection rate.
-                    double r = Utils.RANDOM.nextDouble();
-                    
-                    if (r - totalModifier <= disease.getInfectionRate())
+                    if (rand <= disease.getInfectionRate() * totalModifier)
                     {
                         setHealthStatus(HealthStatus.INCUBATING);
                         setDayCounter(0L);
@@ -125,7 +122,7 @@ public class State
                 if (dayCounter_ >= disease.getIncubationDays())
                 {
                     HealthStatus healthStatus =
-                        rand <= disease.getAsymptomaticRate() - totalModifier ? HealthStatus.ASYMPTOMATIC
+                        rand <= disease.getAsymptomaticRate() ? HealthStatus.ASYMPTOMATIC
                         : isSelfIsolationActive ? HealthStatus.SELF_ISOLATING
                         : HealthStatus.SYMPTOMATIC;
                     setHealthStatus(healthStatus);
@@ -142,7 +139,7 @@ public class State
                 if (dayCounter_ >= disease.getInfectionDays())
                 {
                     HealthStatus healthStatus =
-                        rand <= disease.getDeathRate() - totalModifier ? HealthStatus.DEAD
+                        rand <= disease.getDeathRate() ? HealthStatus.DEAD
                         : HealthStatus.CURED;
                     setHealthStatus(healthStatus);
                     setDayCounter(0L);

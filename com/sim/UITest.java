@@ -1,6 +1,13 @@
 package com.sim;
-VOID THIS PORGRAM IS VOID DUE TO BETTER ONE 
-I AM KEEPING THIS HERE FOR TEST AND REFERENCE PURPOSES 
+
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+/*VOID THIS PORGRAM IS VOID DUE TO BETTER ONE
+I AM KEEPING THIS HERE FOR TEST AND REFERENCE PURPOSES */
 import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -141,7 +148,7 @@ public class UITest extends Application
         //Adds options to combo boxes
         cb[0].getItems().addAll("Choose one", Databases.getDiseaseCopy(0).getName(), Databases.getDiseaseCopy(1).getName());
         cb[1].getItems().addAll("Choose one", Databases.getPrecautionCopy(0).getName(),
-            Databases.getPrecautionCopy(1).getName(), Databases.getPrecautionCopy(2).getName(), 
+            Databases.getPrecautionCopy(1).getName(), Databases.getPrecautionCopy(2).getName(),
             Databases.getPrecautionCopy(3).getName());
 
         //Sets Default value
@@ -149,7 +156,7 @@ public class UITest extends Application
         designArea.addRow( 0,labs[0],cb[0]);
         designArea.addRow( 1,labs[1], cb[1]);
         designArea.addRow( 2,labs[2],tf[0]);
-        designArea.addRow( 3, labs[3],tf[1]);  
+        designArea.addRow( 3, labs[3],tf[1]);
         designArea.addRow( 4, labs[4],tf[2]);
         designArea.addRow( 5, CheckDay);
         designArea.addRow( 6,startButton );
@@ -162,13 +169,13 @@ public class UITest extends Application
             {
                 //to obtain text box data it is a simple .getText function.
                 Disease disease= new Disease();
-                for (int cycle=0; cycle > Databases.getDiseasesLength();cycle++){   
+                for (int cycle=0; cycle > Databases.getDiseasesLength();cycle++){
                     if(cb[0].getValue()==Databases.getDiseaseCopy(cycle).getName())//"" is the name in the dropdown box also they will be if statements.
                     {
                          disease = new Disease(Databases.getDiseaseCopy(cycle));
                     }
                 }
-                for (int rotate=0; rotate > Databases.getPrecautionsLength();rotate++){   
+                for (int rotate=0; rotate > Databases.getPrecautionsLength();rotate++){
                     if(cb[1].getValue()==Databases.getPrecautionCopy(rotate).getName())//"" is the name in the dropdown box also they will be if statements.
                     {
                         SimSettings simSettings = new SimSettings(disease, Databases.getPrecautionCopy(rotate).getModifier() ,
@@ -196,7 +203,7 @@ public class UITest extends Application
             aboutMenu.getItems().addAll(optMenu[x]);
         }
 
-        bar.getMenus().addAll(aboutMenu); 
+        bar.getMenus().addAll(aboutMenu);
 
         //Displays Help Section
         optMenu[0].setOnAction(
@@ -210,7 +217,7 @@ public class UITest extends Application
 
                 Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
                 infoAlert.showAndWait();
-            });      
+            });
 
         //Displays Credit Section
         optMenu[1].setOnAction(
@@ -224,7 +231,7 @@ public class UITest extends Application
 
                 Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
                 infoAlert.showAndWait();
-            });     
+            });
 
         //Closes Application
         // to add a shortcut key combination to a menu item:
@@ -234,7 +241,7 @@ public class UITest extends Application
             (ActionEvent event) ->
             {
                 System.exit(0);// this exits the program
-            }); 
+            });
 
         //Variables used to start
         String[] dData = new String[2];
@@ -249,7 +256,7 @@ public class UITest extends Application
                 if(!TFValidationCheck(labs, tf, cb, ea)) { //|| !CBTValidationCheck(labs, cb, ea)) {
                     ea.showAndWait();
                 } else {
-                    //Handles Textfields and ComboBoxes 
+                    //Handles Textfields and ComboBoxes
                     for(int x = 0; x < iData.length; x++) {
                         if(x <= 1) { //Combo Boxes
 
@@ -265,7 +272,7 @@ public class UITest extends Application
         mainStage.show();
     }
 
-    /**Checks each user input is valid. 
+    /**Checks each user input is valid.
      * True: All inputs are valid
      * False: At least one input is invalid. Adds invalid entry to string to be used in Alert Box.
      */
@@ -294,20 +301,20 @@ public class UITest extends Application
                 el = el + labs[x+2].getText() + " is invalid. Please enter a valid number.\n";
 
                 isValid = false;
-            } 
+            }
 
             //Checks if Infected Population exceeds Total Population
-            if(x==1 && !tf[x].getText().isEmpty() && 
+            if(x==1 && !tf[x].getText().isEmpty() &&
             Integer.parseInt(tf[1].getText()) > Integer.parseInt(tf[0].getText())) {
                 el = el + "Infected Population cannot exceed Total Population.\n";
                 isValid = false;
             }
 
             //Checks if any value exceeds max
-            if(x <= 1 && !tf[x].getText().isEmpty() && 
+            if(x <= 1 && !tf[x].getText().isEmpty() &&
             Integer.parseInt(tf[x].getText()) > MAXPOP) {
-                el = el + labs[x+2].getText() + 
-                " exceeds the maximum limit. Please lower your entry by at least " 
+                el = el + labs[x+2].getText() +
+                " exceeds the maximum limit. Please lower your entry by at least "
                 + (Integer.parseInt(tf[x].getText()) - MAXPOP) + ".\n";
                 isValid = false;
             }
@@ -327,7 +334,7 @@ public class UITest extends Application
 
 //ComboBox Validation Method
 
-// /**Checks each selection in ComboBox is valid. 
+// /**Checks each selection in ComboBox is valid.
 // * True: All selections are valid
 // * False: At least one selection
 // */
@@ -358,7 +365,7 @@ public class UITest extends Application
 // for (int x = 0; x < iData.length; x++) {
 // iData[x] = Integer.parseInt(tf[x].getText());
 // }
-// } else { 
+// } else {
 // if(CBTValidationCheck(labs, cb, ea)) {
 // for(int x = 0; x < cb.length; x++) {
 // }
@@ -372,10 +379,10 @@ public class UITest extends Application
 // try{
 // //Handles Textfields
 // for (int x = 0; x < iData.length; x++) {
-// //Checks if each entry is invalid (exceeds max, 
+// //Checks if each entry is invalid (exceeds max,
 // //if infected pop > total pop, etc). Throws error if true
 // if(tf[x].getText().isEmpty() || Integer.parseInt(tf[x].getText()) < 0) {
-// el = el + "\nInvalid entry at " + labs[x+2].getText() + 
+// el = el + "\nInvalid entry at " + labs[x+2].getText() +
 // ". Please enter a valid number.";
 
 // isValid = false;
@@ -393,7 +400,7 @@ public class UITest extends Application
 // ea.setContentText(el);
 // ea.showAndWait();
 // }
-// } 
+// }
 // }
 // catch(Exception e) {
 // ea.setContentText("Enter Finalized Credits");
