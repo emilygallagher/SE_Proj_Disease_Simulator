@@ -40,8 +40,8 @@ import javafx.stage.FileChooser.ExtensionFilter;
  */
 public class UITest2 extends Application
 {
-    private String el = "", el2 = "";
-    private boolean isValid, isValid2;
+    private String el = "";
+    private boolean isValid;
     private final int MAXPOP = 2500;
 
     public static void main(String[] args)
@@ -77,17 +77,19 @@ public class UITest2 extends Application
         root.setCenter(root2);
 
         GridPane designArea = new GridPane();
-        designArea.setHgap(5);
+        designArea.setHgap(4);
         designArea.setVgap(9);
-        designArea.setPadding( new Insets(4) );
+        designArea.setPadding( new Insets(10) );
 
         // ------------------Days section-------------------------------------------
         CheckBox CheckDay = new CheckBox("Simulate days?");
 
         // -------------------Button--------------------------------------
-        Button startButton = new Button("initialize");
-        Button startBtn= new Button("Start");
+        Button startBtn = new Button("Start");
+        Button playBtn= new Button("Play");
         Button pauseBtn = new Button("Pause");
+        HBox btnRow = new HBox(40);
+        btnRow.getChildren().addAll(startBtn, playBtn, pauseBtn);
 
         // region where the sim will go. it is white to display the locale
         int canvasWidth = 800;
@@ -149,20 +151,20 @@ public class UITest2 extends Application
         //these 2 are specially for the updating of the stats
         Label dayLabel = new Label("Day: 0");
         Label countsLabel = new Label();
-        //Sets Default value
 
+        //Sets Default value
         designArea.addRow(0,labs[0], cb[0]);
         designArea.addRow(1,labs[1], cb[1]);
         designArea.addRow(2,labs[2], tf[0]);
         designArea.addRow(3, labs[3], tf[1]);
         designArea.addRow(4, labs[4], tf[2]);
         designArea.addRow(5, CheckDay);
-        designArea.addRow(6, startButton, startBtn, pauseBtn );
+        //designArea.addRow(6, btnRow);
+        designArea.addRow(6, startBtn, playBtn, pauseBtn);
         designArea.addRow(7, dayLabel);//this is part of the stats
         designArea.addRow(8, countsLabel); //this is part of the stats
 
         // event and listener to activate on changes.
-
         // most generic functional interface: no inputs, no output, contains method run()
         Runnable updateFunction =
             () ->
@@ -210,7 +212,7 @@ public class UITest2 extends Application
                 Alert infoAlert = new Alert( AlertType.INFORMATION );
                 infoAlert.setTitle("Credits");
                 infoAlert.setHeaderText("Credits");
-                infoAlert.setContentText("Enter Finalized Credits");
+                infoAlert.setContentText("Emily Gallagher: Backend Programmer\nJames Meurer: Research & QA Testing\nJohn Kulins: Team Lead \nThomas Kohut: Frontend Programmer");
 
                 Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
                 infoAlert.showAndWait();
@@ -237,6 +239,7 @@ public class UITest2 extends Application
                     countsLabel.setText(simManager.getPopulationManager().statusCountsFormatted());
                 }
             };
+
         //Variables used to start
         String[] dData = new String[2];
         int[] iData = new int[3];
@@ -245,7 +248,7 @@ public class UITest2 extends Application
         Stage as = (Stage)ea.getDialogPane().getScene().getWindow();
 
         //start button functionality
-        startButton.setOnAction((ActionEvent event) ->
+        startBtn.setOnAction((ActionEvent event) ->
             {
                 if(!TFValidationCheck(labs, tf, cb, ea)) { //|| !CBTValidationCheck(labs, cb, ea)) {
                     ea.showAndWait();
@@ -263,9 +266,9 @@ public class UITest2 extends Application
                         if(cb[1].getValue()==Databases.getPrecautionCopy(rotate).getName())//"" is the name in the dropdown box also they will be if statements.
                         {
                             int simDays = CheckDay.isSelected() ?
-                                Integer.parseInt(tf[2].getText()) : -1;
+                                    Integer.parseInt(tf[2].getText()) : -1;
                             System.out.println(simDays);
-                            
+
                             simSettings = new SimSettings(disease, Databases.getPrecautionCopy(rotate).getModifier() ,
                                 false,Integer.parseInt(tf[0].getText()),
                                 Integer.parseInt(tf[1].getText()), simDays, 90,10,2.0, 5.0,false);
@@ -275,22 +278,26 @@ public class UITest2 extends Application
                     simManager.setSimSettings(simSettings);
                     simManager.newSimulation();
                     dayLabel.setText("Day: 1");
-                    
+
                     countsLabel.setText(simManager.getPopulationManager().statusCountsFormatted());
+
+                    simManager.startSimulation();
+                    simAnimTimer.start();
                 }
 
             });
-        startBtn.setOnAction
-        (
+
+        playBtn.setOnAction(
             (ActionEvent event) ->
             {
-                simManager.startSimulation();
-                simAnimTimer.start();
+                if(simManager.getDay()<Integer.parseInt(tf[2].getText())) {
+                    simManager.startSimulation();
+                    simAnimTimer.start();
+                }
             }
         );
 
-        pauseBtn.setOnAction
-        (
+        pauseBtn.setOnAction(
             (ActionEvent event) ->
             {
                 simManager.pauseSimulation();
@@ -311,17 +318,17 @@ public class UITest2 extends Application
 
         //Checks if each entry is invalid
         for (int x = 0; x < tf.length; x++) {
-            //Handles ComboBoxes
-            if(x==0) {
-                //Checks if an option was chosen in each Combo Box
-                if(cbt[x].getValue()=="Choose one")
-                {
+            //Checks if an option was chosen in each Combo Box
+            if(x==0) {                
+                //Checks Disease cb isn't default value
+                if(cbt[x].getValue()=="Choose one") {
                     el = el + "Please select a " + labs[x].getText() + ".\n";
                     isValid = false;
+                }
 
-                    if(cbt[x+1].getValue()=="Choose one") {
-                        el = el + "Please select a " + labs[x+1].getText() + ".\n";
-                    }
+                //Handles Prevention Method cb isn't default value
+                if(cbt[x+1].getValue()=="Choose one") {
+                    el = el + "Please select a " + labs[x+1].getText() + ".\n";
                 }
             }
 
