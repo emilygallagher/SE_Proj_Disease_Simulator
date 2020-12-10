@@ -24,8 +24,8 @@ public final class Databases
         {
             // Initialize all Disease presets here.
             new Disease("Covid-19", 100, .037f, .1f,.018f , 14, 8),
-            new Disease("Influenza", 100, .037f, .1f,.018f , 14, 8)
-
+            new Disease("Influenza", 100, .055f, .1f,.0009f , 2, 10)
+            
         };
         
         PRECAUTIONS_ = new Precaution[]
