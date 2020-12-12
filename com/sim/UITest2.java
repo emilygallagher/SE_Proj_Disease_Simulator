@@ -82,7 +82,7 @@ public class UITest2 extends Application
         designArea.setPadding( new Insets(10) );
 
         // ------------------Days section-------------------------------------------
-        CheckBox CheckDay = new CheckBox("Simulate days?");
+        CheckBox CheckDay = new CheckBox("Run for set days?");
 
         // -------------------Button--------------------------------------
         Button startBtn = new Button("Start");
@@ -164,14 +164,6 @@ public class UITest2 extends Application
         designArea.addRow(7, dayLabel);//this is part of the stats
         designArea.addRow(8, countsLabel); //this is part of the stats
 
-        // event and listener to activate on changes.
-        // most generic functional interface: no inputs, no output, contains method run()
-        Runnable updateFunction =
-            () ->
-            {
-                //to obtain text box data it is a simple .getText function.
-
-            };
         // This is the menu bar section that is at the top
         Menu aboutMenu = new Menu("Options");
 
@@ -228,7 +220,7 @@ public class UITest2 extends Application
                 System.exit(0);// this exits the program
             });
 
-        //the timer////////////////////////////////// my marker
+        //the timer
         AnimationTimer simAnimTimer = new AnimationTimer()
             {
                 @Override
@@ -267,7 +259,6 @@ public class UITest2 extends Application
                         {
                             int simDays = CheckDay.isSelected() ?
                                     Integer.parseInt(tf[2].getText()) : -1;
-                            System.out.println(simDays);
 
                             simSettings = new SimSettings(disease, Databases.getPrecautionCopy(rotate).getModifier() ,
                                 false,Integer.parseInt(tf[0].getText()),
@@ -284,7 +275,6 @@ public class UITest2 extends Application
                     simManager.startSimulation();
                     simAnimTimer.start();
                 }
-
             });
 
         playBtn.setOnAction(
