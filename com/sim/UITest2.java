@@ -20,7 +20,6 @@ import javafx.geometry.*;
 import java.io.*;
 import java.util.*;
 
-import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
 //images additions
 // new imports to work with images.
@@ -190,7 +189,8 @@ public class UITest2 extends Application
                 Alert infoAlert = new Alert( AlertType.INFORMATION );
                 infoAlert.setTitle("Help");
                 infoAlert.setHeaderText("How do I use this program?");
-                infoAlert.setContentText("1. Select a disease and preventative measure from the dropdown list. \n 2. Enter the population and total number days you wish to be simulated. \n 3. Press the start button to start the simulation.");
+                infoAlert.setContentText("1. Select a disease\n and preventative"+"\n measure from the dropdown"+" list\n 2. Enter the population and total\n number days you wish to be simulated." 
+                    +"\n 3. Press the start button to start the simulation.");
 
                 Stage alertStage = (Stage)infoAlert.getDialogPane().getScene().getWindow();
                 infoAlert.showAndWait();
