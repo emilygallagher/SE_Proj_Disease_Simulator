@@ -67,7 +67,7 @@ public final class Databases
      */
     public static Disease getDiseaseCopy(String name)
     {
-        for (var disease : DISEASES_)
+        for (Disease disease : DISEASES_)
         {
             if (disease.getName() == name)
             {
@@ -112,7 +112,7 @@ public final class Databases
      */
     public static Precaution getPrecautionCopy(String name)
     {
-        for (var precaution : PRECAUTIONS_)
+        for (Precaution precaution : PRECAUTIONS_)
         {
             if (precaution.getName() == name)
             {

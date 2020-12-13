@@ -44,6 +44,11 @@ public class UITest2 extends Application
     private boolean isValid;
     private final int MAXPOP = 2500;
 
+    public UITest2()
+    {
+        super();
+    }
+    
     public static void main(String[] args)
     {
         try
@@ -309,7 +314,7 @@ public class UITest2 extends Application
         //Checks if each entry is invalid
         for (int x = 0; x < tf.length; x++) {
             //Checks if an option was chosen in each Combo Box
-            if(x==0) {                
+            if(x==0) {
                 //Checks Disease cb isn't default value
                 if(cbt[x].getValue()=="Choose one") {
                     el = el + "Please select a " + labs[x].getText() + ".\n";
