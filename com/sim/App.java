@@ -37,13 +37,13 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * @version 1.0
  * @since 0.1
  */
-public class UITest2 extends Application
+public class App extends Application
 {
     private String el = "";
     private boolean isValid;
     private final int MAXPOP = 2500;
 
-    public UITest2()
+    public App()
     {
         super();
     }

@@ -222,3 +222,6 @@ hs_err_pid*
 # https://plugins.jetbrains.com/plugin/12206-codestream
 
 # End of https://www.toptal.com/developers/gitignore/api/java,bluej,jetbrains,intellij,git
+
+# Whitelist completed jar file
+!final.jar
